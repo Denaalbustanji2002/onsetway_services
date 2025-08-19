@@ -1,6 +1,7 @@
-// ignore_for_file: deprecated_member_use, duplicate_ignore
+// ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:onsetway_services/presentation/services_details/programming/view/point_sale.dart';
 import '../../../../constitem/const_colors.dart';
 import '../../../../helper/responsive_ui.dart';
 import '../widget/appbar_pop.dart';
@@ -16,7 +17,7 @@ class _ProgrammingScreenState extends State<ProgrammingScreen> {
   final List<Map<String, dynamic>> categories = [
     {
       'title': 'Point of Sale',
-      'subtitle': 'Smarter Sales.Better Control.Seamless Experience.',
+      'subtitle': 'Smarter Sales. Better Control. Seamless Experience.',
       'icon': Icons.point_of_sale,
       'imagePath': 'assets/programming/pos/pos2.jpg',
       'benefits': [
@@ -25,11 +26,10 @@ class _ProgrammingScreenState extends State<ProgrammingScreen> {
         'Faster, Smoother Checkout',
         'Multi-Payment Support',
       ],
-      'onTap': () {},
     },
     {
       'title': 'Mobile Application',
-      'subtitle': 'Stronger Engagement.Smarter Access.',
+      'subtitle': 'Stronger Engagement. Smarter Access.',
       'icon': Icons.phone_iphone,
       'imagePath': 'assets/programming/mobile app/mobile4.png',
       'benefits': [
@@ -38,11 +38,10 @@ class _ProgrammingScreenState extends State<ProgrammingScreen> {
         'Secure Online Payments',
         'Boosted Engagement',
       ],
-      'onTap': () {},
     },
     {
       'title': 'Web Applications',
-      'subtitle': 'Modern Design.Powerful Code.Built for Business.',
+      'subtitle': 'Modern Design. Powerful Code. Built for Business.',
       'icon': Icons.web,
       'imagePath': 'assets/programming/desktop/Desktop.webp',
       'benefits': [
@@ -51,11 +50,10 @@ class _ProgrammingScreenState extends State<ProgrammingScreen> {
         'Search Engine Friendly',
         'Secure and Reliable',
       ],
-      'onTap': () {},
     },
     {
-      'title': 'Desktop Applications (Windows / MacOs / Linux)',
-      'subtitle': 'High Performance.Offline Functionality.',
+      'title': 'Desktop Applications',
+      'subtitle': 'High Performance. Offline Functionality.',
       'icon': Icons.desktop_windows_outlined,
       'imagePath': 'assets/programming/desktop/desktop2.webp',
       'benefits': [
@@ -63,16 +61,15 @@ class _ProgrammingScreenState extends State<ProgrammingScreen> {
         'Cost-Effective Deployment',
         'Hardware Integration',
       ],
-      'onTap': () {},
     },
   ];
 
-  // Android size scaling factor (0.8 = 80% of original size)
   double get androidScaleFactor {
-    return Theme.of(context).platform == TargetPlatform.android ? 0.8 : 1.0;
+    return Theme
+        .of(context)
+        .platform == TargetPlatform.android ? 0.8 : 1.0;
   }
 
-  // Helper function to scale dimensions for Android
   double s(double value) => value * androidScaleFactor;
 
   @override
@@ -84,13 +81,13 @@ class _ProgrammingScreenState extends State<ProgrammingScreen> {
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
             colors: [
               ConstColor.black,
               ConstColor.black.withOpacity(0.95),
               ConstColor.black,
             ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
         ),
         child: SingleChildScrollView(
@@ -100,9 +97,7 @@ class _ProgrammingScreenState extends State<ProgrammingScreen> {
               // Header Section
               Container(
                 padding: EdgeInsets.symmetric(
-                  vertical: s(20),
-                  horizontal: s(16),
-                ),
+                    vertical: s(20), horizontal: s(16)),
                 margin: EdgeInsets.all(s(20)),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(s(16)),
@@ -113,16 +108,15 @@ class _ProgrammingScreenState extends State<ProgrammingScreen> {
                     ],
                   ),
                   border: Border.all(
-                    color: ConstColor.gold.withOpacity(0.3),
-                    width: s(1.5),
-                  ),
+                      color: ConstColor.gold.withOpacity(0.3), width: s(1.5)),
                 ),
                 child: Column(
                   children: [
                     ShaderMask(
-                      shaderCallback: (rect) => LinearGradient(
-                        colors: [ConstColor.gold, ConstColor.white],
-                      ).createShader(rect),
+                      shaderCallback: (rect) =>
+                          LinearGradient(
+                            colors: [ConstColor.gold, ConstColor.white],
+                          ).createShader(rect),
                       child: Text(
                         'Transform Your Business with Technology',
                         style: TextStyle(
@@ -133,7 +127,6 @@ class _ProgrammingScreenState extends State<ProgrammingScreen> {
                         textAlign: TextAlign.center,
                       ),
                     ),
-                    SizedBox(height: s(2)),
                   ],
                 ),
               ),
@@ -144,16 +137,16 @@ class _ProgrammingScreenState extends State<ProgrammingScreen> {
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: categories.length,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: responsive.isMobile
-                      ? 1
-                      : (responsive.isTablet ? 2 : 2),
+                  crossAxisCount: responsive.isMobile ? 1 : (responsive.isTablet
+                      ? 2
+                      : 2),
                   crossAxisSpacing: s(16),
                   mainAxisSpacing: s(16),
                   childAspectRatio: responsive.isMobile ? 0.85 : 1.1,
                 ),
                 itemBuilder: (context, index) {
                   final category = categories[index];
-                  return _buildCategoryCard(category, responsive, index);
+                  return _buildCategoryCard(category, responsive);
                 },
               ),
             ],
@@ -163,50 +156,48 @@ class _ProgrammingScreenState extends State<ProgrammingScreen> {
     );
   }
 
-  Widget _buildCategoryCard(
-    Map<String, dynamic> category,
-    ResponsiveUi responsive,
-    int index,
-  ) {
+  Widget _buildCategoryCard(Map<String, dynamic> category,
+      ResponsiveUi responsive) {
     return GestureDetector(
-      onTap: category['onTap'],
-      child: Container(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => PosFeatureScreen()),
+        );
+      },
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 250),
+        curve: Curves.easeInOut,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(s(24)),
-          color: Colors.black,
+          borderRadius: BorderRadius.circular(s(32)),
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [ConstColor.black, ConstColor.black.withOpacity(0.9)],
+            colors: [
+              ConstColor.black.withOpacity(0.85),
+              ConstColor.black.withOpacity(0.7),
+            ],
           ),
           border: Border.all(
-            color: ConstColor.gold.withOpacity(0.3),
-            width: s(1.5),
-          ),
+              color: ConstColor.gold.withOpacity(0.35), width: s(1.2)),
           boxShadow: [
             BoxShadow(
-              color: ConstColor.gold.withOpacity(0.2),
-              blurRadius: s(15),
+              color: ConstColor.gold.withOpacity(0.15),
+              blurRadius: s(25),
               spreadRadius: s(2),
-              offset: const Offset(0, 8),
-            ),
-            BoxShadow(
-              color: Colors.black.withOpacity(0.3),
-              blurRadius: s(10),
-              offset: const Offset(0, 4),
+              offset: const Offset(0, 10),
             ),
           ],
         ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Enhanced Image Section with Overlay
+            // صورة مع أيقونة
             Expanded(
               flex: 3,
               child: ClipRRect(
                 borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(s(24)),
-                  topRight: Radius.circular(s(24)),
+                  topLeft: Radius.circular(s(32)),
+                  topRight: Radius.circular(s(32)),
                 ),
                 child: Stack(
                   children: [
@@ -219,12 +210,12 @@ class _ProgrammingScreenState extends State<ProgrammingScreen> {
                     Container(
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
                           colors: [
                             Colors.transparent,
-                            ConstColor.black.withOpacity(0.7),
+                            ConstColor.black.withOpacity(0.8)
                           ],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
                         ),
                       ),
                     ),
@@ -232,23 +223,28 @@ class _ProgrammingScreenState extends State<ProgrammingScreen> {
                       top: s(16),
                       right: s(16),
                       child: Container(
-                        padding: EdgeInsets.all(s(8)),
+                        padding: EdgeInsets.all(s(10)),
                         decoration: BoxDecoration(
-                          color: ConstColor.gold.withOpacity(0.9),
-                          borderRadius: BorderRadius.circular(s(12)),
+                          gradient: LinearGradient(
+                            colors: [
+                              ConstColor.gold,
+                              ConstColor.gold.withOpacity(0.8)
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(s(14)),
                           boxShadow: [
                             BoxShadow(
-                              color: ConstColor.gold.withOpacity(0.3),
-                              blurRadius: s(8),
-                              spreadRadius: s(1),
-                            ),
+                              color: ConstColor.gold.withOpacity(0.4),
+                              blurRadius: s(12),
+                              offset: const Offset(0, 6),
+                            )
                           ],
                         ),
                         child: Icon(
-                          category['icon'],
-                          color: ConstColor.black,
-                          size: s(24),
-                        ),
+                            category['icon'], color: ConstColor.black, size: s(
+                            26)),
                       ),
                     ),
                   ],
@@ -256,7 +252,7 @@ class _ProgrammingScreenState extends State<ProgrammingScreen> {
               ),
             ),
 
-            // Enhanced Content Section
+            // النصوص + المزايا + زر
             Expanded(
               flex: 4,
               child: Padding(
@@ -264,149 +260,105 @@ class _ProgrammingScreenState extends State<ProgrammingScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Title with Gradient Effect
-                    ShaderMask(
-                      shaderCallback: (rect) => LinearGradient(
-                        colors: [ConstColor.gold, ConstColor.white],
-                      ).createShader(rect),
-                      child: Text(
-                        category['title'],
-                        style: TextStyle(
-                          fontSize: s(responsive.isMobile ? 20 : 22),
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
+                    Text(
+                      category['title'],
+                      style: TextStyle(
+                        fontSize: s(responsive.isMobile ? 20 : 22),
+                        fontWeight: FontWeight.bold,
+                        foreground: Paint()
+                          ..shader = LinearGradient(
+                            colors: [ConstColor.gold, Colors.white],
+                          ).createShader(Rect.fromLTWH(0, 0, 200, 70)),
+                        shadows: [
+                          Shadow(
+                            blurRadius: 6,
+                            color: Colors.black.withOpacity(0.6),
+                            offset: const Offset(2, 2),
+                          ),
+                        ],
                       ),
                     ),
-
                     SizedBox(height: s(8)),
-
-                    // Subtitle
                     Text(
                       category['subtitle'],
                       style: TextStyle(
-                        fontSize: s(responsive.isMobile ? 12 : 13),
-                        color: ConstColor.white.withOpacity(0.8),
-                        height: s(1.4),
+                        fontSize: s(13),
+                        color: ConstColor.white.withOpacity(0.85),
                         fontWeight: FontWeight.w500,
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
+                    SizedBox(height: s(12)),
 
-                    SizedBox(height: s(10)),
-
-                    // Benefits Section
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
+                    // قائمة المزايا
+                    ...category['benefits'].map<Widget>((benefit) =>
+                        Padding(
+                          padding: EdgeInsets.only(bottom: s(6)),
+                          child: Row(
                             children: [
-                              Icon(
-                                Icons.lightbulb_outline,
-                                color: ConstColor.gold,
-                                size: s(16),
-                              ),
-                              SizedBox(width: s(6)),
-                              Text(
-                                'Why Your Business Needs This:',
-                                style: TextStyle(
-                                  fontSize: s(14),
-                                  fontWeight: FontWeight.w600,
-                                  color: ConstColor.gold,
+                              Icon(Icons.check_circle,
+                                  size: s(14), color: ConstColor.gold),
+                              SizedBox(width: s(8)),
+                              Expanded(
+                                child: Text(
+                                  benefit,
+                                  style: TextStyle(
+                                    fontSize: s(12),
+                                    color: ConstColor.white.withOpacity(0.9),
+                                  ),
                                 ),
                               ),
                             ],
                           ),
-                          SizedBox(height: s(8)),
-                          Expanded(
-                            child: ListView.builder(
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: category['benefits'].length,
-                              itemBuilder: (context, benefitIndex) {
-                                return Padding(
-                                  padding: EdgeInsets.only(bottom: s(6)),
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                        margin: EdgeInsets.only(top: s(6)),
-                                        width: s(4),
-                                        height: s(4),
-                                        decoration: BoxDecoration(
-                                          color: ConstColor.gold,
-                                          borderRadius: BorderRadius.circular(
-                                            s(2),
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(width: s(8)),
-                                      Expanded(
-                                        child: Text(
-                                          category['benefits'][benefitIndex],
-                                          style: TextStyle(
-                                            fontSize: s(
-                                              responsive.isMobile ? 11 : 12,
-                                            ),
-                                            color: ConstColor.white.withOpacity(
-                                              0.9,
-                                            ),
-                                            height: s(1.3),
-                                          ),
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                        )),
 
-                    // CTA Button
-                    SizedBox(height: s(8)),
-                    Container(
+                    const Spacer(),
+
+                    // زر Learn More
+                    SizedBox(
                       width: double.infinity,
-                      height: s(36),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            ConstColor.gold,
-                            ConstColor.gold.withOpacity(0.8),
-                          ],
-                        ),
-                        borderRadius: BorderRadius.circular(s(18)),
-                        boxShadow: [
-                          BoxShadow(
-                            color: ConstColor.gold.withOpacity(0.3),
-                            blurRadius: s(8),
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
+                      height: s(40),
                       child: ElevatedButton(
-                        onPressed: category['onTap'],
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => PosFeatureScreen()),
+                          );
+                        },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.transparent,
-                          shadowColor: Colors.transparent,
+                          padding: EdgeInsets.zero,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(s(18)),
+                            borderRadius: BorderRadius.circular(s(20)),
                           ),
+                        ).copyWith(
+                          backgroundColor: MaterialStateProperty.all(
+                              Colors.transparent),
+                          shadowColor: MaterialStateProperty.all(Colors
+                              .transparent),
                         ),
-                        child: Text(
-                          'Learn More',
-                          style: TextStyle(
-                            color: ConstColor.black,
-                            fontWeight: FontWeight.w600,
-                            fontSize: s(14),
+                        child: Ink(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                ConstColor.gold,
+                                ConstColor.gold.withOpacity(0.8)
+                              ],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            borderRadius: BorderRadius.circular(s(20)),
+                          ),
+                          child: Center(
+                            child: Text(
+                              'Learn More',
+                              style: TextStyle(
+                                color: ConstColor.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize: s(14),
+                              ),
+                            ),
                           ),
                         ),
                       ),
@@ -421,3 +373,4 @@ class _ProgrammingScreenState extends State<ProgrammingScreen> {
     );
   }
 }
+// شاشة الـ POS عند الضغط
