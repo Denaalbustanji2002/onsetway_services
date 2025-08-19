@@ -1,3 +1,6 @@
+// ignore_for_file: deprecated_member_use
+
+import 'dart:io'; // For platform detection
 import 'package:flutter/material.dart';
 import '../../../constitem/const_colors.dart';
 import '../../../helper/responsive_ui.dart';
@@ -15,8 +18,7 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage>
-    with TickerProviderStateMixin {
+class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   late AnimationController _heroAnimationController;
   late AnimationController _titleAnimationController;
   late AnimationController _cardAnimationController;
@@ -46,31 +48,60 @@ class _HomePageState extends State<HomePage>
       vsync: this,
     );
 
-    _heroScaleAnimation = Tween<double>(begin: 0.8, end: 1.0)
-        .animate(CurvedAnimation(parent: _heroAnimationController, curve: Curves.elasticOut));
+    _heroScaleAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _heroAnimationController,
+        curve: Curves.elasticOut,
+      ),
+    );
 
-    _heroOpacityAnimation = Tween<double>(begin: 0.0, end: 1.0)
-        .animate(CurvedAnimation(parent: _heroAnimationController, curve: Curves.easeInOut));
+    _heroOpacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _heroAnimationController,
+        curve: Curves.easeInOut,
+      ),
+    );
 
-    _titleSlideAnimation = Tween<Offset>(begin: const Offset(-1.0, 0.0), end: Offset.zero)
-        .animate(CurvedAnimation(parent: _titleAnimationController, curve: Curves.elasticOut));
+    _titleSlideAnimation =
+        Tween<Offset>(begin: const Offset(-1.0, 0.0), end: Offset.zero).animate(
+          CurvedAnimation(
+            parent: _titleAnimationController,
+            curve: Curves.elasticOut,
+          ),
+        );
 
-    _titleOpacityAnimation = Tween<double>(begin: 0.0, end: 1.0)
-        .animate(CurvedAnimation(parent: _titleAnimationController, curve: Curves.easeInOut));
+    _titleOpacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _titleAnimationController,
+        curve: Curves.easeInOut,
+      ),
+    );
 
-    _cardStaggerAnimation = Tween<double>(begin: 0.0, end: 1.0)
-        .animate(CurvedAnimation(parent: _cardAnimationController, curve: Curves.easeOutCubic));
+    _cardStaggerAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _cardAnimationController,
+        curve: Curves.easeOutCubic,
+      ),
+    );
 
     _startAnimations();
   }
 
-  void _startAnimations() async {
-    await Future.delayed(const Duration(milliseconds: 300));
-    _heroAnimationController.forward();
-    await Future.delayed(const Duration(milliseconds: 600));
-    _titleAnimationController.forward();
-    await Future.delayed(const Duration(milliseconds: 400));
-    _cardAnimationController.forward();
+  void _startAnimations() {
+    Future.wait([
+      Future.delayed(const Duration(milliseconds: 300)).then((_) {
+        if (!mounted) return;
+        _heroAnimationController.forward();
+      }),
+      Future.delayed(const Duration(milliseconds: 900)).then((_) {
+        if (!mounted) return;
+        _titleAnimationController.forward();
+      }),
+      Future.delayed(const Duration(milliseconds: 1300)).then((_) {
+        if (!mounted) return;
+        _cardAnimationController.forward();
+      }),
+    ]);
   }
 
   @override
@@ -85,11 +116,20 @@ class _HomePageState extends State<HomePage>
   Widget build(BuildContext context) {
     final responsive = ResponsiveUi(context);
 
+    // درجات التصغير للأندرويد
+    final androidReduction = Platform.isAndroid ? 4.0 : 0.0;
+
+    // Calculate video height with 40% reduction for Android
+    final double videoHeight = Platform.isAndroid
+        ? (responsive.isMobile ? 220 : 320) *
+              0.7 // 40% reduction
+        : (responsive.isMobile ? 220 : 320) - androidReduction;
+
     return OWScaffold(
       title: 'OnsetWay',
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(14),
         child: Column(
           children: [
             // Hero Section with Video
@@ -101,7 +141,7 @@ class _HomePageState extends State<HomePage>
                   child: Opacity(
                     opacity: _heroOpacityAnimation.value,
                     child: Container(
-                      height: responsive.isMobile ? 220 : 320,
+                      height: videoHeight, // Use reduced height for Android
                       width: double.infinity,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(32),
@@ -124,9 +164,7 @@ class _HomePageState extends State<HomePage>
                       child: Stack(
                         fit: StackFit.expand,
                         children: [
-                          const VideoBackground(), // الفيديو
-
-                          // Gradient Overlay
+                          const VideoBackground(),
                           Container(
                             decoration: BoxDecoration(
                               gradient: LinearGradient(
@@ -142,44 +180,49 @@ class _HomePageState extends State<HomePage>
                               ),
                             ),
                           ),
-
-                          // Floating Particles
-                          ...List.generate(6, (index) =>
-                              TweenAnimationBuilder<double>(
-                                duration: Duration(seconds: 3 + index),
-                                tween: Tween<double>(begin: 0, end: 1),
-                                builder: (context, value, child) {
-                                  return Positioned(
-                                    left: 50.0 + (index * 60) + (value * 30),
-                                    top: 40.0 + (index * 20) + (value * 50),
-                                    child: Opacity(
-                                      opacity: 0.3 + (value * 0.4),
-                                      child: Container(
-                                        width: 4 + (index * 2).toDouble(),
-                                        height: 4 + (index * 2).toDouble(),
-                                        decoration: BoxDecoration(
-                                          color: ConstColor.gold.withOpacity(0.6),
-                                          shape: BoxShape.circle,
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: ConstColor.gold.withOpacity(0.4),
-                                              blurRadius: 8,
-                                              spreadRadius: 2,
+                          ...List.generate(
+                            6,
+                            (index) => TweenAnimationBuilder<double>(
+                              duration: Duration(seconds: 3 + index),
+                              tween: Tween<double>(begin: 0, end: 1),
+                              builder: (context, value, child) {
+                                return Positioned(
+                                  left: 50.0 + (index * 60) + (value * 30),
+                                  top: 40.0 + (index * 20) + (value * 50),
+                                  child: Opacity(
+                                    opacity: 0.3 + (value * 0.4),
+                                    child: Container(
+                                      width:
+                                          (4 + (index * 2).toDouble()) -
+                                          androidReduction,
+                                      height:
+                                          (4 + (index * 2).toDouble()) -
+                                          androidReduction,
+                                      decoration: BoxDecoration(
+                                        color: ConstColor.gold.withOpacity(0.6),
+                                        shape: BoxShape.circle,
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: ConstColor.gold.withOpacity(
+                                              0.4,
                                             ),
-                                          ],
-                                        ),
+                                            blurRadius: 8,
+                                            spreadRadius: 2,
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                  );
-                                },
-                                onEnd: () { setState(() {}); },
-                              )
+                                  ),
+                                );
+                              },
+                              onEnd: () {
+                                setState(() {});
+                              },
+                            ),
                           ),
-
-                          // Hero Text
                           Center(
                             child: Container(
-                              padding: const EdgeInsets.all(24),
+                              padding: EdgeInsets.all(24 - androidReduction),
                               decoration: BoxDecoration(
                                 color: Colors.black.withOpacity(0.3),
                                 borderRadius: BorderRadius.circular(20),
@@ -194,7 +237,9 @@ class _HomePageState extends State<HomePage>
                                 style: TextStyle(
                                   fontFamily: 'MAIAN',
                                   color: Colors.white,
-                                  fontSize: responsive.isMobile ? 16 : 24,
+                                  fontSize:
+                                      (responsive.isMobile ? 16 : 24) -
+                                      androidReduction,
                                   fontWeight: FontWeight.bold,
                                   height: 1.3,
                                 ),
@@ -209,9 +254,7 @@ class _HomePageState extends State<HomePage>
               },
             ),
 
-            const SizedBox(height: 20),
-
-            // Section Title
+            const SizedBox(height: 20 - 8), // نقص 4 للأندرويد
             AnimatedBuilder(
               animation: _titleAnimationController,
               builder: (context, child) {
@@ -227,7 +270,9 @@ class _HomePageState extends State<HomePage>
                           'Our Services',
                           style: TextStyle(
                             fontFamily: 'MAIAN',
-                            fontSize: responsive.isMobile ? 26 : 32,
+                            fontSize:
+                                (responsive.isMobile ? 26 : 32) -
+                                androidReduction,
                             fontWeight: FontWeight.bold,
                             color: ConstColor.gold,
                           ),
@@ -239,16 +284,21 @@ class _HomePageState extends State<HomePage>
               },
             ),
 
-            const SizedBox(height: 12),
+            SizedBox(
+              height: (12 - androidReduction).clamp(0.0, 12),
+            ), // نفس الشي
 
-            // Cards Section
             AnimatedBuilder(
               animation: _cardStaggerAnimation,
               builder: (context, child) {
                 return Column(
                   children: [
                     Transform.translate(
-                      offset: Offset(0, 50 * (1 - _cardStaggerAnimation.value)),
+                      offset: Offset(
+                        0,
+                        50 * (1 - _cardStaggerAnimation.value) -
+                            androidReduction,
+                      ),
                       child: Opacity(
                         opacity: _cardStaggerAnimation.value,
                         child: CategoryCard(
@@ -259,26 +309,34 @@ class _HomePageState extends State<HomePage>
                           onTap: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (_) => const CoreScreen()),
+                              MaterialPageRoute(
+                                builder: (_) => const CoreScreen(),
+                              ),
                             );
                           },
                         ),
                       ),
                     ),
-                    const SizedBox(height: 2),
+                    SizedBox(height: (2 - androidReduction).clamp(0.0, 2)),
                     Transform.translate(
                       offset: Offset(
                         0,
                         50 *
-                            (1 -
-                                Curves.easeOut.transform(
-                                    (_cardStaggerAnimation.value - 0.3)
-                                        .clamp(0.0, 1.0) /
-                                        0.7)),
+                                (1 -
+                                    Curves.easeOut.transform(
+                                      (_cardStaggerAnimation.value - 0.3).clamp(
+                                            0.0,
+                                            1.0,
+                                          ) /
+                                          0.7,
+                                    )) -
+                            androidReduction,
                       ),
                       child: Opacity(
                         opacity: Curves.easeOut.transform(
-                            (_cardStaggerAnimation.value - 0.3).clamp(0.0, 1.0) / 0.7),
+                          (_cardStaggerAnimation.value - 0.3).clamp(0.0, 1.0) /
+                              0.7,
+                        ),
                         child: CategoryCard(
                           title: 'Marketing Services',
                           subtitle: 'Design & Branding • SEO • More',
@@ -287,7 +345,9 @@ class _HomePageState extends State<HomePage>
                           onTap: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (_) => const MarketingScreen()),
+                              MaterialPageRoute(
+                                builder: (_) => const MarketingScreen(),
+                              ),
                             );
                           },
                         ),

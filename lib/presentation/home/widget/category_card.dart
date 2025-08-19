@@ -1,5 +1,7 @@
-import 'package:flutter/cupertino.dart';
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
+import 'dart:io' show Platform; // Add platform detection
 
 class CategoryCard extends StatefulWidget {
   final String title;
@@ -27,20 +29,26 @@ class _CategoryCardState extends State<CategoryCard>
   late Animation<double> _scaleAnimation;
   late Animation<double> _rotationAnimation;
   bool _isHovered = false;
+  double _scaleFactor = 1.0; // Added scale factor variable
 
   @override
   void initState() {
     super.initState();
+    // Set scale factor based on platform
+    _scaleFactor = Platform.isAndroid ? 0.7 : 1.0;
+
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 200),
       vsync: this,
     );
 
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.98)
-        .animate(CurvedAnimation(parent: _animationController, curve: Curves.easeInOut));
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.98).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+    );
 
-    _rotationAnimation = Tween<double>(begin: 0.0, end: 0.05)
-        .animate(CurvedAnimation(parent: _animationController, curve: Curves.easeInOut));
+    _rotationAnimation = Tween<double>(begin: 0.0, end: 0.05).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+    );
   }
 
   @override
@@ -48,6 +56,9 @@ class _CategoryCardState extends State<CategoryCard>
     _animationController.dispose();
     super.dispose();
   }
+
+  // Helper method to scale values for Android
+  double _scaled(double value) => value * _scaleFactor;
 
   @override
   Widget build(BuildContext context) {
@@ -69,41 +80,53 @@ class _CategoryCardState extends State<CategoryCard>
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 300),
                 curve: Curves.easeOutCubic,
-                height: _isHovered ? 190 : 180,
+                height: _isHovered
+                    ? _scaled(190) // Scaled height
+                    : _scaled(180), // Scaled height
                 margin: EdgeInsets.symmetric(
-                  horizontal: _isHovered ? 4 : 8,
-                  vertical: _isHovered ? 4 : 8,
+                  horizontal: _isHovered
+                      ? _scaled(4) // Scaled margin
+                      : _scaled(8), // Scaled margin
+                  vertical: _isHovered
+                      ? _scaled(4) // Scaled margin
+                      : _scaled(8), // Scaled margin
                 ),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(24),
+                  borderRadius: BorderRadius.circular(
+                    _scaled(24),
+                  ), // Scaled radius
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withOpacity(_isHovered ? 0.4 : 0.25),
-                      blurRadius: _isHovered ? 20 : 15,
-                      offset: Offset(0, _isHovered ? 10 : 8),
-                      spreadRadius: _isHovered ? 2 : 0,
+                      blurRadius: _isHovered
+                          ? _scaled(20)
+                          : _scaled(15), // Scaled blur
+                      offset: Offset(
+                        0,
+                        _isHovered ? _scaled(10) : _scaled(8),
+                      ), // Scaled offset
+                      spreadRadius: _isHovered
+                          ? _scaled(2)
+                          : 0, // Scaled spread
                     ),
                     BoxShadow(
                       color: Colors.white.withOpacity(0.1),
-                      blurRadius: 2,
-                      offset: const Offset(0, -2),
+                      blurRadius: _scaled(2), // Scaled blur
+                      offset: Offset(0, _scaled(-2)), // Scaled offset
                     ),
                   ],
                 ),
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(24),
+                  borderRadius: BorderRadius.circular(
+                    _scaled(24),
+                  ), // Scaled radius
                   child: Stack(
                     fit: StackFit.expand,
                     children: [
-                      // Background Image تغطي كامل البطاقة
+                      // Background Image
                       Transform.scale(
                         scale: _isHovered ? 1.05 : 1.0,
-                        child: Image.asset(
-                          widget.imagePath,
-                          fit: BoxFit.cover,
-                          width: double.infinity,
-                          height: double.infinity,
-                        ),
+                        child: Image.asset(widget.imagePath, fit: BoxFit.cover),
                       ),
 
                       // Gradient overlay
@@ -123,7 +146,7 @@ class _CategoryCardState extends State<CategoryCard>
                         ),
                       ),
 
-                      // Shimmer effect عند hover
+                      // Shimmer effect on hover
                       if (_isHovered)
                         Container(
                           decoration: BoxDecoration(
@@ -140,9 +163,9 @@ class _CategoryCardState extends State<CategoryCard>
                           ),
                         ),
 
-                      // المحتوى
+                      // Content
                       Padding(
-                        padding: const EdgeInsets.all(20),
+                        padding: EdgeInsets.all(_scaled(20)), // Scaled padding
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -155,32 +178,61 @@ class _CategoryCardState extends State<CategoryCard>
                                   transform: Matrix4.identity()
                                     ..rotateZ(_rotationAnimation.value),
                                   decoration: BoxDecoration(
-                                    color: Colors.white.withOpacity(_isHovered ? 0.25 : 0.2),
-                                    borderRadius: BorderRadius.circular(16),
-                                    border: Border.all(color: Colors.white.withOpacity(0.3), width: 1),
+                                    color: Colors.white.withOpacity(
+                                      _isHovered ? 0.25 : 0.2,
+                                    ),
+                                    borderRadius: BorderRadius.circular(
+                                      _scaled(16),
+                                    ), // Scaled radius
+                                    border: Border.all(
+                                      color: Colors.white.withOpacity(0.3),
+                                      width: _scaled(1), // Scaled width
+                                    ),
                                     boxShadow: [
                                       BoxShadow(
                                         color: Colors.black.withOpacity(0.1),
-                                        blurRadius: 8,
-                                        offset: const Offset(0, 4),
+                                        blurRadius: _scaled(8), // Scaled blur
+                                        offset: Offset(
+                                          0,
+                                          _scaled(4),
+                                        ), // Scaled offset
                                       ),
                                     ],
                                   ),
-                                  padding: const EdgeInsets.all(12),
-                                  child: Icon(widget.icon, color: Colors.white, size: _isHovered ? 32 : 28),
+                                  padding: EdgeInsets.all(
+                                    _scaled(12),
+                                  ), // Scaled padding
+                                  child: Icon(
+                                    widget.icon,
+                                    color: Colors.white,
+                                    size: _isHovered
+                                        ? _scaled(32) // Scaled size
+                                        : _scaled(28), // Scaled size
+                                  ),
                                 ),
 
                                 // Arrow
                                 AnimatedContainer(
                                   duration: const Duration(milliseconds: 300),
                                   transform: Matrix4.identity()
-                                    ..translate(_isHovered ? 4.0 : 0.0, 0.0),
+                                    ..translate(
+                                      _isHovered ? _scaled(4.0) : 0.0,
+                                      0.0,
+                                    ),
                                   decoration: BoxDecoration(
                                     color: Colors.white.withOpacity(0.15),
-                                    borderRadius: BorderRadius.circular(12),
+                                    borderRadius: BorderRadius.circular(
+                                      _scaled(12),
+                                    ), // Scaled radius
                                   ),
-                                  padding: const EdgeInsets.all(8),
-                                  child: Icon(Icons.arrow_forward_ios_rounded, color: Colors.white, size: 16),
+                                  padding: EdgeInsets.all(
+                                    _scaled(8),
+                                  ), // Scaled padding
+                                  child: Icon(
+                                    Icons.arrow_forward_ios_rounded,
+                                    color: Colors.white,
+                                    size: _scaled(16), // Scaled size
+                                  ),
                                 ),
                               ],
                             ),
@@ -194,39 +246,56 @@ class _CategoryCardState extends State<CategoryCard>
                                   duration: const Duration(milliseconds: 300),
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
-                                    fontSize: _isHovered ? 22 : 20,
+                                    fontSize: _isHovered
+                                        ? _scaled(22) // Scaled size
+                                        : _scaled(20), // Scaled size
                                     color: Colors.white,
-                                    letterSpacing: 0.5,
+                                    letterSpacing: _scaled(
+                                      0.5,
+                                    ), // Scaled spacing
                                     shadows: [
                                       Shadow(
                                         color: Colors.black.withOpacity(0.8),
-                                        blurRadius: 4,
-                                        offset: const Offset(0, 2),
+                                        blurRadius: _scaled(4), // Scaled blur
+                                        offset: Offset(
+                                          0,
+                                          _scaled(2),
+                                        ), // Scaled offset
                                       ),
                                     ],
                                   ),
                                   child: Text(widget.title),
                                 ),
 
-                                const SizedBox(height: 8),
+                                SizedBox(height: _scaled(8)), // Scaled spacing
 
                                 AnimatedOpacity(
                                   duration: const Duration(milliseconds: 300),
                                   opacity: _isHovered ? 1.0 : 0.9,
                                   child: Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: _scaled(12), // Scaled padding
+                                      vertical: _scaled(6), // Scaled padding
+                                    ),
                                     decoration: BoxDecoration(
                                       color: Colors.black.withOpacity(0.3),
-                                      borderRadius: BorderRadius.circular(20),
-                                      border: Border.all(color: Colors.white.withOpacity(0.2), width: 1),
+                                      borderRadius: BorderRadius.circular(
+                                        _scaled(20),
+                                      ), // Scaled radius
+                                      border: Border.all(
+                                        color: Colors.white.withOpacity(0.2),
+                                        width: _scaled(1), // Scaled width
+                                      ),
                                     ),
                                     child: Text(
                                       widget.subtitle,
                                       style: TextStyle(
-                                        fontSize: 12,
+                                        fontSize: _scaled(12), // Scaled size
                                         color: Colors.white.withOpacity(0.95),
                                         fontWeight: FontWeight.bold,
-                                        letterSpacing: 0.3,
+                                        letterSpacing: _scaled(
+                                          0.3,
+                                        ), // Scaled spacing
                                       ),
                                     ),
                                   ),
@@ -241,10 +310,16 @@ class _CategoryCardState extends State<CategoryCard>
                       AnimatedContainer(
                         duration: const Duration(milliseconds: 300),
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(24),
+                          borderRadius: BorderRadius.circular(
+                            _scaled(24),
+                          ), // Scaled radius
                           border: Border.all(
-                            color: Colors.white.withOpacity(_isHovered ? 0.3 : 0.1),
-                            width: _isHovered ? 2 : 1,
+                            color: Colors.white.withOpacity(
+                              _isHovered ? 0.3 : 0.1,
+                            ),
+                            width: _isHovered
+                                ? _scaled(2) // Scaled width
+                                : _scaled(1), // Scaled width
                           ),
                         ),
                       ),

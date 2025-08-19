@@ -19,19 +19,18 @@ class OWPScaffold extends StatelessWidget {
   });
 
   // Palette
-  static const Color black    = Color(0xFF000000);
+  static const Color black = Color(0xFF000000);
   static const Color darkGold = Color(0xFFcd9733);
-  static const Color gold     = Color(0xFFb8964c);
-  static const Color white    = Color(0xFFFFFFFF);
+  static const Color gold = Color(0xFFb8964c);
+  static const Color white = Color(0xFFFFFFFF);
 
   // Black AppBar background
-  LinearGradient get _barGradient => const LinearGradient(
-    colors: [black, black],
-  );
+  LinearGradient get _barGradient =>
+      const LinearGradient(colors: [black, black]);
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    // final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       backgroundColor: black,
@@ -92,7 +91,6 @@ class _OWAppBar extends StatelessWidget implements PreferredSizeWidget {
               if (Navigator.canPop(context)) {
                 Navigator.pop(context);
               } else {
-
                 debugPrint('No previous page to pop!');
               }
             },
@@ -117,7 +115,11 @@ class _OWAppBar extends StatelessWidget implements PreferredSizeWidget {
                 ),
               ShaderMask(
                 shaderCallback: (rect) => const LinearGradient(
-                  colors: [OWPScaffold.darkGold, OWPScaffold.gold, OWPScaffold.white],
+                  colors: [
+                    OWPScaffold.darkGold,
+                    OWPScaffold.gold,
+                    OWPScaffold.white,
+                  ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ).createShader(rect),
@@ -132,7 +134,8 @@ class _OWAppBar extends StatelessWidget implements PreferredSizeWidget {
               ),
             ],
           ),
-          actions: actions ??
+          actions:
+              actions ??
               [
                 IconButton(
                   icon: const Icon(Icons.notifications_none_rounded),

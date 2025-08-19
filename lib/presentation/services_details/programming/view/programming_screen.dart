@@ -1,7 +1,8 @@
+// ignore_for_file: deprecated_member_use, duplicate_ignore
+
 import 'package:flutter/material.dart';
 import '../../../../constitem/const_colors.dart';
 import '../../../../helper/responsive_ui.dart';
-import '../../../home/widget/appbar_widget.dart';
 import '../widget/appbar_pop.dart';
 
 class ProgrammingScreen extends StatefulWidget {
@@ -22,7 +23,7 @@ class _ProgrammingScreenState extends State<ProgrammingScreen> {
         'Real-Time Sales Tracking',
         'Automated Inventory Management',
         'Faster, Smoother Checkout',
-        'Multi-Payment Support'
+        'Multi-Payment Support',
       ],
       'onTap': () {},
     },
@@ -35,7 +36,7 @@ class _ProgrammingScreenState extends State<ProgrammingScreen> {
         'Instant Customer Access',
         'Online Ordering & Booking',
         'Secure Online Payments',
-        'Boosted Engagement'
+        'Boosted Engagement',
       ],
       'onTap': () {},
     },
@@ -48,7 +49,7 @@ class _ProgrammingScreenState extends State<ProgrammingScreen> {
         'Professional Online Presence',
         'Better User Experience',
         'Search Engine Friendly',
-        'Secure and Reliable'
+        'Secure and Reliable',
       ],
       'onTap': () {},
     },
@@ -65,6 +66,14 @@ class _ProgrammingScreenState extends State<ProgrammingScreen> {
       'onTap': () {},
     },
   ];
+
+  // Android size scaling factor (0.8 = 80% of original size)
+  double get androidScaleFactor {
+    return Theme.of(context).platform == TargetPlatform.android ? 0.8 : 1.0;
+  }
+
+  // Helper function to scale dimensions for Android
+  double s(double value) => value * androidScaleFactor;
 
   @override
   Widget build(BuildContext context) {
@@ -85,15 +94,18 @@ class _ProgrammingScreenState extends State<ProgrammingScreen> {
           ),
         ),
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(14),
+          padding: EdgeInsets.all(s(14)),
           child: Column(
             children: [
               // Header Section
               Container(
-                padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
-                margin: const EdgeInsets.all(20),
+                padding: EdgeInsets.symmetric(
+                  vertical: s(20),
+                  horizontal: s(16),
+                ),
+                margin: EdgeInsets.all(s(20)),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(s(16)),
                   gradient: LinearGradient(
                     colors: [
                       ConstColor.gold.withOpacity(0.1),
@@ -102,7 +114,7 @@ class _ProgrammingScreenState extends State<ProgrammingScreen> {
                   ),
                   border: Border.all(
                     color: ConstColor.gold.withOpacity(0.3),
-                    width: 1,
+                    width: s(1.5),
                   ),
                 ),
                 child: Column(
@@ -114,15 +126,14 @@ class _ProgrammingScreenState extends State<ProgrammingScreen> {
                       child: Text(
                         'Transform Your Business with Technology',
                         style: TextStyle(
-                          fontSize: responsive.isMobile ? 20 : 28,
+                          fontSize: s(responsive.isMobile ? 20 : 28),
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                         ),
                         textAlign: TextAlign.center,
                       ),
                     ),
-                    const SizedBox(height: 2),
-
+                    SizedBox(height: s(2)),
                   ],
                 ),
               ),
@@ -133,9 +144,11 @@ class _ProgrammingScreenState extends State<ProgrammingScreen> {
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: categories.length,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: responsive.isMobile ? 1 : (responsive.isTablet ? 2 : 2),
-                  crossAxisSpacing: 16,
-                  mainAxisSpacing: 16,
+                  crossAxisCount: responsive.isMobile
+                      ? 1
+                      : (responsive.isTablet ? 2 : 2),
+                  crossAxisSpacing: s(16),
+                  mainAxisSpacing: s(16),
                   childAspectRatio: responsive.isMobile ? 0.85 : 1.1,
                 ),
                 itemBuilder: (context, index) {
@@ -150,35 +163,36 @@ class _ProgrammingScreenState extends State<ProgrammingScreen> {
     );
   }
 
-  Widget _buildCategoryCard(Map<String, dynamic> category, ResponsiveUi responsive, int index) {
+  Widget _buildCategoryCard(
+    Map<String, dynamic> category,
+    ResponsiveUi responsive,
+    int index,
+  ) {
     return GestureDetector(
       onTap: category['onTap'],
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(s(24)),
           color: Colors.black,
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [
-              ConstColor.black,
-              ConstColor.black.withOpacity(0.9),
-            ],
+            colors: [ConstColor.black, ConstColor.black.withOpacity(0.9)],
           ),
           border: Border.all(
             color: ConstColor.gold.withOpacity(0.3),
-            width: 1.5,
+            width: s(1.5),
           ),
           boxShadow: [
             BoxShadow(
               color: ConstColor.gold.withOpacity(0.2),
-              blurRadius: 15,
-              spreadRadius: 2,
+              blurRadius: s(15),
+              spreadRadius: s(2),
               offset: const Offset(0, 8),
             ),
             BoxShadow(
               color: Colors.black.withOpacity(0.3),
-              blurRadius: 10,
+              blurRadius: s(10),
               offset: const Offset(0, 4),
             ),
           ],
@@ -190,9 +204,9 @@ class _ProgrammingScreenState extends State<ProgrammingScreen> {
             Expanded(
               flex: 3,
               child: ClipRRect(
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(24),
-                  topRight: Radius.circular(24),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(s(24)),
+                  topRight: Radius.circular(s(24)),
                 ),
                 child: Stack(
                   children: [
@@ -215,25 +229,25 @@ class _ProgrammingScreenState extends State<ProgrammingScreen> {
                       ),
                     ),
                     Positioned(
-                      top: 16,
-                      right: 16,
+                      top: s(16),
+                      right: s(16),
                       child: Container(
-                        padding: const EdgeInsets.all(8),
+                        padding: EdgeInsets.all(s(8)),
                         decoration: BoxDecoration(
                           color: ConstColor.gold.withOpacity(0.9),
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(s(12)),
                           boxShadow: [
                             BoxShadow(
                               color: ConstColor.gold.withOpacity(0.3),
-                              blurRadius: 8,
-                              spreadRadius: 1,
+                              blurRadius: s(8),
+                              spreadRadius: s(1),
                             ),
                           ],
                         ),
                         child: Icon(
                           category['icon'],
                           color: ConstColor.black,
-                          size: 24,
+                          size: s(24),
                         ),
                       ),
                     ),
@@ -246,7 +260,7 @@ class _ProgrammingScreenState extends State<ProgrammingScreen> {
             Expanded(
               flex: 4,
               child: Padding(
-                padding: const EdgeInsets.all(20),
+                padding: EdgeInsets.all(s(20)),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -258,7 +272,7 @@ class _ProgrammingScreenState extends State<ProgrammingScreen> {
                       child: Text(
                         category['title'],
                         style: TextStyle(
-                          fontSize: responsive.isMobile ? 20 : 22,
+                          fontSize: s(responsive.isMobile ? 20 : 22),
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                         ),
@@ -267,22 +281,22 @@ class _ProgrammingScreenState extends State<ProgrammingScreen> {
                       ),
                     ),
 
-                    const SizedBox(height: 8),
+                    SizedBox(height: s(8)),
 
                     // Subtitle
                     Text(
                       category['subtitle'],
                       style: TextStyle(
-                        fontSize: responsive.isMobile ? 12 : 13,
+                        fontSize: s(responsive.isMobile ? 12 : 13),
                         color: ConstColor.white.withOpacity(0.8),
-                        height: 1.4,
+                        height: s(1.4),
                         fontWeight: FontWeight.w500,
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
 
-                    const SizedBox(height: 10),
+                    SizedBox(height: s(10)),
 
                     // Benefits Section
                     Expanded(
@@ -294,47 +308,54 @@ class _ProgrammingScreenState extends State<ProgrammingScreen> {
                               Icon(
                                 Icons.lightbulb_outline,
                                 color: ConstColor.gold,
-                                size: 16,
+                                size: s(16),
                               ),
-                              const SizedBox(width: 6),
+                              SizedBox(width: s(6)),
                               Text(
                                 'Why Your Business Needs This:',
                                 style: TextStyle(
-                                  fontSize: 14,
+                                  fontSize: s(14),
                                   fontWeight: FontWeight.w600,
                                   color: ConstColor.gold,
                                 ),
                               ),
                             ],
                           ),
-                          const SizedBox(height: 8),
+                          SizedBox(height: s(8)),
                           Expanded(
                             child: ListView.builder(
                               physics: const NeverScrollableScrollPhysics(),
                               itemCount: category['benefits'].length,
                               itemBuilder: (context, benefitIndex) {
                                 return Padding(
-                                  padding: const EdgeInsets.only(bottom: 6),
+                                  padding: EdgeInsets.only(bottom: s(6)),
                                   child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Container(
-                                        margin: const EdgeInsets.only(top: 6),
-                                        width: 4,
-                                        height: 4,
+                                        margin: EdgeInsets.only(top: s(6)),
+                                        width: s(4),
+                                        height: s(4),
                                         decoration: BoxDecoration(
                                           color: ConstColor.gold,
-                                          borderRadius: BorderRadius.circular(2),
+                                          borderRadius: BorderRadius.circular(
+                                            s(2),
+                                          ),
                                         ),
                                       ),
-                                      const SizedBox(width: 8),
+                                      SizedBox(width: s(8)),
                                       Expanded(
                                         child: Text(
                                           category['benefits'][benefitIndex],
                                           style: TextStyle(
-                                            fontSize: responsive.isMobile ? 11 : 12,
-                                            color: ConstColor.white.withOpacity(0.9),
-                                            height: 1.3,
+                                            fontSize: s(
+                                              responsive.isMobile ? 11 : 12,
+                                            ),
+                                            color: ConstColor.white.withOpacity(
+                                              0.9,
+                                            ),
+                                            height: s(1.3),
                                           ),
                                           maxLines: 2,
                                           overflow: TextOverflow.ellipsis,
@@ -351,10 +372,10 @@ class _ProgrammingScreenState extends State<ProgrammingScreen> {
                     ),
 
                     // CTA Button
-                    const SizedBox(height: 8),
+                    SizedBox(height: s(8)),
                     Container(
                       width: double.infinity,
-                      height: 36,
+                      height: s(36),
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
@@ -362,11 +383,11 @@ class _ProgrammingScreenState extends State<ProgrammingScreen> {
                             ConstColor.gold.withOpacity(0.8),
                           ],
                         ),
-                        borderRadius: BorderRadius.circular(18),
+                        borderRadius: BorderRadius.circular(s(18)),
                         boxShadow: [
                           BoxShadow(
                             color: ConstColor.gold.withOpacity(0.3),
-                            blurRadius: 8,
+                            blurRadius: s(8),
                             offset: const Offset(0, 2),
                           ),
                         ],
@@ -377,7 +398,7 @@ class _ProgrammingScreenState extends State<ProgrammingScreen> {
                           backgroundColor: Colors.transparent,
                           shadowColor: Colors.transparent,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(18),
+                            borderRadius: BorderRadius.circular(s(18)),
                           ),
                         ),
                         child: Text(
@@ -385,7 +406,7 @@ class _ProgrammingScreenState extends State<ProgrammingScreen> {
                           style: TextStyle(
                             color: ConstColor.black,
                             fontWeight: FontWeight.w600,
-                            fontSize: 14,
+                            fontSize: s(14),
                           ),
                         ),
                       ),

@@ -1,32 +1,41 @@
-import 'package:flutter/cupertino.dart';
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../../constitem/const_colors.dart';
 import '../../../helper/responsive_ui.dart';
 
-Widget buildStatItem(String value, String label, ResponsiveUi responsive) {
+Widget buildStatItem(
+  String value,
+  String label,
+  ResponsiveUi responsive, {
+  double factor = 1.0,
+}) {
+  final double valueFont = (responsive.isMobile ? 18.0 : 22.0) * factor;
+  final double labelFont = (responsive.isMobile ? 12.0 : 14.0) * factor;
+  final double spacing = 6.0 * factor;
+
   return Column(
+    mainAxisSize: MainAxisSize.min,
     children: [
-      ShaderMask(
-        shaderCallback: (rect) => LinearGradient(
-          colors: [ConstColor.gold, ConstColor.darkGold],
-        ).createShader(rect),
-        child: Text(
-          value,
-          style: TextStyle(
-            fontSize: responsive.isMobile ? 18 : 20,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
+      Text(
+        value,
+        style: TextStyle(
+          fontSize: valueFont,
+          fontWeight: FontWeight.w700,
+          color: ConstColor.gold,
+          letterSpacing: .3,
         ),
       ),
-      const SizedBox(height: 4),
+      SizedBox(height: spacing),
       Text(
         label,
         style: TextStyle(
-          fontSize: responsive.isMobile ? 12 : 14,
-          color: ConstColor.white.withOpacity(0.7),
+          fontSize: labelFont,
+          color: ConstColor.white.withOpacity(0.8),
+          fontWeight: FontWeight.w500,
+          letterSpacing: .2,
         ),
       ),
     ],
@@ -34,43 +43,59 @@ Widget buildStatItem(String value, String label, ResponsiveUi responsive) {
 }
 
 Widget buildEnhancedCategoryCard(
-    Map<String, dynamic> category,
-    int index,
-    ResponsiveUi responsive,
-    BuildContext context, // لازم تمرر الكونتكست
-    ) {
+  Map<String, dynamic> category,
+  int index,
+  ResponsiveUi responsive,
+  BuildContext context, {
+  double factor = 1.0,
+}) {
+  // Helper
+  double sf(double v) => v * factor;
+
+  final double cardHeight = sf(200);
+  final double radius = sf(24);
+  final double padAll = sf(24);
+  final double iconWrapPad = sf(10); // أصغر الحاوية شوية
+  final double iconSize = sf(22); // ✅ أيقونة مصغّرة
+  final double badgeH = sf(6);
+  final double badgeW = sf(12);
+
+  final double titleSize = (responsive.isMobile ? 18.0 : 20.0) * factor;
+  final double subtitleSize = (responsive.isMobile ? 12.0 : 14.0) * factor;
+
   return Container(
-    height: 200,
+    height: cardHeight,
     decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(24),
+      borderRadius: BorderRadius.circular(radius),
       boxShadow: [
         BoxShadow(
           color: Colors.black.withOpacity(0.3),
-          blurRadius: 20,
+          blurRadius: sf(20),
           offset: const Offset(0, 10),
-          spreadRadius: 2,
+          spreadRadius: sf(2),
         ),
         BoxShadow(
           color: ConstColor.gold.withOpacity(0.1),
-          blurRadius: 30,
+          blurRadius: sf(30),
           offset: const Offset(0, 0),
-          spreadRadius: 3,
+          spreadRadius: sf(3),
         ),
       ],
     ),
     child: ClipRRect(
-      borderRadius: BorderRadius.circular(24),
+      borderRadius: BorderRadius.circular(radius),
       child: Stack(
         fit: StackFit.expand,
         children: [
+          // الخلفية
           Image.asset(
             category['imagePath'] as String,
-            width: 300,
-            height: 90,
             fit: BoxFit.cover,
+            width: double.infinity,
+            height: double.infinity,
           ),
 
-          // Enhanced gradient overlay
+          // طبقة التدرّج
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -87,21 +112,21 @@ Widget buildEnhancedCategoryCard(
             ),
           ),
 
-          // Content
+          // المحتوى
           Padding(
-            padding: const EdgeInsets.all(24),
+            padding: EdgeInsets.all(padAll),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Icon and number badge
+                // الأيقونة + البادج
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Container(
-                      padding: const EdgeInsets.all(12),
+                      padding: EdgeInsets.all(iconWrapPad),
                       decoration: BoxDecoration(
                         color: ConstColor.gold.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(16),
+                        borderRadius: BorderRadius.circular(sf(16)),
                         border: Border.all(
                           color: ConstColor.gold.withOpacity(0.4),
                           width: 1,
@@ -109,26 +134,26 @@ Widget buildEnhancedCategoryCard(
                         boxShadow: [
                           BoxShadow(
                             color: ConstColor.gold.withOpacity(0.3),
-                            blurRadius: 10,
-                            spreadRadius: 1,
+                            blurRadius: sf(10),
+                            spreadRadius: sf(1),
                           ),
                         ],
                       ),
                       child: Icon(
                         category['icon'] as IconData,
                         color: ConstColor.gold,
-                        size: 28,
+                        size: iconSize, // ← الأيقونة الآن أصغر
                       ),
                     ),
 
                     Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 6,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: badgeW,
+                        vertical: badgeH,
                       ),
                       decoration: BoxDecoration(
                         color: ConstColor.gold.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: BorderRadius.circular(sf(20)),
                         border: Border.all(
                           color: ConstColor.gold.withOpacity(0.4),
                           width: 1,
@@ -138,7 +163,7 @@ Widget buildEnhancedCategoryCard(
                         '${index + 1}'.padLeft(2, '0'),
                         style: TextStyle(
                           color: ConstColor.gold,
-                          fontSize: 12,
+                          fontSize: sf(12),
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -148,21 +173,18 @@ Widget buildEnhancedCategoryCard(
 
                 const Spacer(),
 
-                // Title and subtitle
+                // العنوان + الوصف
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     ShaderMask(
                       shaderCallback: (rect) => LinearGradient(
-                        colors: [
-                          ConstColor.white,
-                          ConstColor.gold,
-                        ],
+                        colors: [ConstColor.white, ConstColor.gold],
                       ).createShader(rect),
                       child: Text(
                         category['title'] as String,
                         style: TextStyle(
-                          fontSize: responsive.isMobile ? 18 : 20,
+                          fontSize: titleSize,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                           letterSpacing: 0.5,
@@ -170,13 +192,13 @@ Widget buildEnhancedCategoryCard(
                       ),
                     ),
 
-                    const SizedBox(height: 8),
+                    SizedBox(height: sf(8)),
 
                     Container(
-                      padding: const EdgeInsets.all(12),
+                      padding: EdgeInsets.all(sf(12)),
                       decoration: BoxDecoration(
                         color: Colors.black.withOpacity(0.4),
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(sf(12)),
                         border: Border.all(
                           color: Colors.white.withOpacity(0.1),
                           width: 1,
@@ -185,7 +207,7 @@ Widget buildEnhancedCategoryCard(
                       child: Text(
                         category['subtitle'] as String,
                         style: TextStyle(
-                          fontSize: responsive.isMobile ? 12 : 14,
+                          fontSize: subtitleSize,
                           fontWeight: FontWeight.bold,
                           color: ConstColor.white.withOpacity(0.9),
                           height: 1.3,
@@ -204,11 +226,11 @@ Widget buildEnhancedCategoryCard(
           Material(
             color: Colors.transparent,
             child: InkWell(
-              borderRadius: BorderRadius.circular(24),
+              borderRadius: BorderRadius.circular(radius),
               onTap: () {
                 HapticFeedback.lightImpact();
                 if (category['onTap'] != null) {
-                  category['onTap'](context); // ← يستدعي onTap من الماب
+                  category['onTap'](context);
                 }
               },
               child: Container(),

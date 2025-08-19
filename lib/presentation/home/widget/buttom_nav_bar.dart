@@ -1,5 +1,9 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:awesome_bottom_bar/awesome_bottom_bar.dart';
+import 'package:flutter/foundation.dart'
+    show defaultTargetPlatform, TargetPlatform;
 
 // Define bottom navigation bar items
 const List<TabItem> baseItems = [
@@ -23,8 +27,24 @@ class CustomBottomNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     List<TabItem> items = List.from(baseItems);
 
+    // فحص المنصة
+    final bool isAndroid = defaultTargetPlatform == TargetPlatform.android;
+    const double factor = 0.7;
+
+    // القيم الأساسية
+    const double baseIconSize = 29;
+    const double baseFontSize = 14;
+    const double basePaddingV = 13;
+    const double baseMargin = 16;
+
+    // إذا Android، نضرب بالـ factor
+    final double iconSize = isAndroid ? baseIconSize * factor : baseIconSize;
+    final double fontSize = isAndroid ? baseFontSize * factor : baseFontSize;
+    final double paddingV = isAndroid ? basePaddingV * factor : basePaddingV;
+    final double margin = isAndroid ? baseMargin * factor : baseMargin;
+
     return Container(
-      margin: const EdgeInsets.all(16),
+      margin: EdgeInsets.all(margin),
       decoration: BoxDecoration(
         boxShadow: [
           BoxShadow(
@@ -40,12 +60,11 @@ class CustomBottomNavBar extends StatelessWidget {
         color: Colors.white.withOpacity(0.7),
         colorSelected: const Color(0xFF987A28),
         indexSelected: selectedIndex,
-        paddingVertical: 16.0, // زيادة المسافة الرأسية
-        //paddingHorizontal: 24.0, // إضافة padding أفقي لجعل العناصر متباعدة أكثر
-        borderRadius: BorderRadius.circular(30), // جعل الحواف أكثر استدارة
-        iconSize: 27, // تكبير حجم الأيقونات
-        titleStyle: const TextStyle(
-          fontSize: 14,
+        paddingVertical: paddingV,
+        borderRadius: BorderRadius.circular(30),
+        iconSize: iconSize,
+        titleStyle: TextStyle(
+          fontSize: fontSize,
           fontWeight: FontWeight.bold,
           color: Colors.white,
         ),
