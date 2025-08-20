@@ -195,19 +195,34 @@ class _SplashScreenState extends State<SplashScreen>
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   // Video player
+                  // Video player (بدون أي Opacity على الفيديو نفسه)
                   if (_showVideo && _videoController.value.isInitialized)
-                    FadeTransition(
-                      opacity: _videoFade,
-                      child: Transform.scale(
-                        scale: _pulse.value,
-                        child: SizedBox(
-                          width: Platform.isAndroid
-                              ? 220 - 8.0
-                              : 220, // نقص 4 على أندرويد
-                          height: Platform.isAndroid ? 220 - 8.0 : 220,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(16),
-                            child: VideoPlayer(_videoController),
+                    Transform.scale(
+                      scale: _pulse.value,
+                      child: SizedBox(
+                        width: Platform.isAndroid ? 212 : 220,
+                        height: Platform.isAndroid ? 212 : 220,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(16),
+                          child: Stack(
+                            fit: StackFit.expand,
+                            children: [
+                              // عزل رسم الفيديو عن أي تأثير توريث شفافية
+                              const RepaintBoundary(
+                                child:
+                                    SizedBox.expand(), // placeholder سيتم استبداله بالسطر التالي
+                              ),
+                              RepaintBoundary(
+                                child: VideoPlayer(_videoController),
+                              ),
+
+                              IgnorePointer(
+                                child: FadeTransition(
+                                  opacity: ReverseAnimation(_videoFade),
+                                  child: const ColoredBox(color: Colors.black),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),

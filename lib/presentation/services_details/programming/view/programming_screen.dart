@@ -26,11 +26,13 @@ class _ProgrammingScreenState extends State<ProgrammingScreen> {
         'Faster, Smoother Checkout',
         'Multi-Payment Support',
       ],
+      'builder': (BuildContext ctx) => const PosFeatureScreen(),
     },
     {
       'title': 'Mobile Application',
       'subtitle': 'Stronger Engagement. Smarter Access.',
       'icon': Icons.phone_iphone,
+      // ملاحظة: بدون مسافة في المجلد
       'imagePath': 'assets/programming/mobile app/mobile4.png',
       'benefits': [
         'Instant Customer Access',
@@ -38,6 +40,7 @@ class _ProgrammingScreenState extends State<ProgrammingScreen> {
         'Secure Online Payments',
         'Boosted Engagement',
       ],
+      'builder': (BuildContext ctx) => const MobileAppScreen(),
     },
     {
       'title': 'Web Applications',
@@ -50,6 +53,7 @@ class _ProgrammingScreenState extends State<ProgrammingScreen> {
         'Search Engine Friendly',
         'Secure and Reliable',
       ],
+      'builder': (BuildContext ctx) => const WebAppScreen(),
     },
     {
       'title': 'Desktop Applications',
@@ -61,16 +65,21 @@ class _ProgrammingScreenState extends State<ProgrammingScreen> {
         'Cost-Effective Deployment',
         'Hardware Integration',
       ],
+      'builder': (BuildContext ctx) => const DesktopAppScreen(),
     },
   ];
 
   double get androidScaleFactor {
-    return Theme
-        .of(context)
-        .platform == TargetPlatform.android ? 0.8 : 1.0;
+    return Theme.of(context).platform == TargetPlatform.android ? 0.8 : 1.0;
   }
 
   double s(double value) => value * androidScaleFactor;
+
+  void _comingSoon() {
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('قريبًا…')));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -97,7 +106,9 @@ class _ProgrammingScreenState extends State<ProgrammingScreen> {
               // Header Section
               Container(
                 padding: EdgeInsets.symmetric(
-                    vertical: s(20), horizontal: s(16)),
+                  vertical: s(20),
+                  horizontal: s(16),
+                ),
                 margin: EdgeInsets.all(s(20)),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(s(16)),
@@ -108,15 +119,16 @@ class _ProgrammingScreenState extends State<ProgrammingScreen> {
                     ],
                   ),
                   border: Border.all(
-                      color: ConstColor.gold.withOpacity(0.3), width: s(1.5)),
+                    color: ConstColor.gold.withOpacity(0.3),
+                    width: s(1.5),
+                  ),
                 ),
                 child: Column(
                   children: [
                     ShaderMask(
-                      shaderCallback: (rect) =>
-                          LinearGradient(
-                            colors: [ConstColor.gold, ConstColor.white],
-                          ).createShader(rect),
+                      shaderCallback: (rect) => LinearGradient(
+                        colors: [ConstColor.gold, ConstColor.white],
+                      ).createShader(rect),
                       child: Text(
                         'Transform Your Business with Technology',
                         style: TextStyle(
@@ -137,9 +149,9 @@ class _ProgrammingScreenState extends State<ProgrammingScreen> {
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: categories.length,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: responsive.isMobile ? 1 : (responsive.isTablet
-                      ? 2
-                      : 2),
+                  crossAxisCount: responsive.isMobile
+                      ? 1
+                      : (responsive.isTablet ? 2 : 2),
                   crossAxisSpacing: s(16),
                   mainAxisSpacing: s(16),
                   childAspectRatio: responsive.isMobile ? 0.85 : 1.1,
@@ -156,14 +168,19 @@ class _ProgrammingScreenState extends State<ProgrammingScreen> {
     );
   }
 
-  Widget _buildCategoryCard(Map<String, dynamic> category,
-      ResponsiveUi responsive) {
+  Widget _buildCategoryCard(
+    Map<String, dynamic> category,
+    ResponsiveUi responsive,
+  ) {
+    final builder = category['builder'] as WidgetBuilder?;
+
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => PosFeatureScreen()),
-        );
+        if (builder != null) {
+          Navigator.push(context, MaterialPageRoute(builder: builder));
+        } else {
+          _comingSoon();
+        }
       },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 250),
@@ -179,7 +196,9 @@ class _ProgrammingScreenState extends State<ProgrammingScreen> {
             ],
           ),
           border: Border.all(
-              color: ConstColor.gold.withOpacity(0.35), width: s(1.2)),
+            color: ConstColor.gold.withOpacity(0.35),
+            width: s(1.2),
+          ),
           boxShadow: [
             BoxShadow(
               color: ConstColor.gold.withOpacity(0.15),
@@ -212,7 +231,7 @@ class _ProgrammingScreenState extends State<ProgrammingScreen> {
                         gradient: LinearGradient(
                           colors: [
                             Colors.transparent,
-                            ConstColor.black.withOpacity(0.8)
+                            ConstColor.black.withOpacity(0.8),
                           ],
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
@@ -228,7 +247,7 @@ class _ProgrammingScreenState extends State<ProgrammingScreen> {
                           gradient: LinearGradient(
                             colors: [
                               ConstColor.gold,
-                              ConstColor.gold.withOpacity(0.8)
+                              ConstColor.gold.withOpacity(0.8),
                             ],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
@@ -239,12 +258,14 @@ class _ProgrammingScreenState extends State<ProgrammingScreen> {
                               color: ConstColor.gold.withOpacity(0.4),
                               blurRadius: s(12),
                               offset: const Offset(0, 6),
-                            )
+                            ),
                           ],
                         ),
                         child: Icon(
-                            category['icon'], color: ConstColor.black, size: s(
-                            26)),
+                          category['icon'],
+                          color: ConstColor.black,
+                          size: s(26),
+                        ),
                       ),
                     ),
                   ],
@@ -292,26 +313,30 @@ class _ProgrammingScreenState extends State<ProgrammingScreen> {
                     SizedBox(height: s(12)),
 
                     // قائمة المزايا
-                    ...category['benefits'].map<Widget>((benefit) =>
-                        Padding(
-                          padding: EdgeInsets.only(bottom: s(6)),
-                          child: Row(
-                            children: [
-                              Icon(Icons.check_circle,
-                                  size: s(14), color: ConstColor.gold),
-                              SizedBox(width: s(8)),
-                              Expanded(
-                                child: Text(
-                                  benefit,
-                                  style: TextStyle(
-                                    fontSize: s(12),
-                                    color: ConstColor.white.withOpacity(0.9),
-                                  ),
+                    ...((category['benefits'] as List).cast<String>()).map(
+                      (benefit) => Padding(
+                        padding: EdgeInsets.only(bottom: s(6)),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.check_circle,
+                              size: s(14),
+                              color: ConstColor.gold,
+                            ),
+                            SizedBox(width: s(8)),
+                            Expanded(
+                              child: Text(
+                                benefit,
+                                style: TextStyle(
+                                  fontSize: s(12),
+                                  color: ConstColor.white.withOpacity(0.9),
                                 ),
                               ),
-                            ],
-                          ),
-                        )),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
 
                     const Spacer(),
 
@@ -321,29 +346,35 @@ class _ProgrammingScreenState extends State<ProgrammingScreen> {
                       height: s(40),
                       child: ElevatedButton(
                         onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => PosFeatureScreen()),
-                          );
+                          if (builder != null) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: builder),
+                            );
+                          } else {
+                            _comingSoon();
+                          }
                         },
-                        style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.zero,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(s(20)),
-                          ),
-                        ).copyWith(
-                          backgroundColor: MaterialStateProperty.all(
-                              Colors.transparent),
-                          shadowColor: MaterialStateProperty.all(Colors
-                              .transparent),
-                        ),
+                        style:
+                            ElevatedButton.styleFrom(
+                              padding: EdgeInsets.zero,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(s(20)),
+                              ),
+                            ).copyWith(
+                              backgroundColor: MaterialStateProperty.all(
+                                Colors.transparent,
+                              ),
+                              shadowColor: MaterialStateProperty.all(
+                                Colors.transparent,
+                              ),
+                            ),
                         child: Ink(
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
                               colors: [
                                 ConstColor.gold,
-                                ConstColor.gold.withOpacity(0.8)
+                                ConstColor.gold.withOpacity(0.8),
                               ],
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
@@ -373,4 +404,57 @@ class _ProgrammingScreenState extends State<ProgrammingScreen> {
     );
   }
 }
-// شاشة الـ POS عند الضغط
+
+// ===================== شاشات بديلة (Placeholder) =====================
+// استبدلها بإصداراتك/ملفاتك الفعلية عند توفرها
+
+class MobileAppScreen extends StatelessWidget {
+  const MobileAppScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return OWPScaffold(
+      title: 'Mobile Application',
+      body: Center(
+        child: Text(
+          'Mobile Application Details',
+          style: TextStyle(color: ConstColor.white),
+        ),
+      ),
+    );
+  }
+}
+
+class WebAppScreen extends StatelessWidget {
+  const WebAppScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return OWPScaffold(
+      title: 'Web Applications',
+      body: Center(
+        child: Text(
+          'Web Applications Details',
+          style: TextStyle(color: ConstColor.white),
+        ),
+      ),
+    );
+  }
+}
+
+class DesktopAppScreen extends StatelessWidget {
+  const DesktopAppScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return OWPScaffold(
+      title: 'Desktop Applications',
+      body: Center(
+        child: Text(
+          'Desktop Applications Details',
+          style: TextStyle(color: ConstColor.white),
+        ),
+      ),
+    );
+  }
+}
