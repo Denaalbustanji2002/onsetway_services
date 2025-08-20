@@ -55,8 +55,8 @@ Widget buildEnhancedCategoryCard(
   final double cardHeight = sf(200);
   final double radius = sf(24);
   final double padAll = sf(24);
-  final double iconWrapPad = sf(10); // أصغر الحاوية شوية
-  final double iconSize = sf(22); // ✅ أيقونة مصغّرة
+  final double iconWrapPad = sf(10);
+  final double iconSize = sf(22);
   final double badgeH = sf(6);
   final double badgeW = sf(12);
 
