@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:onsetway_services/helper/responsive_ui.dart';
-import 'package:onsetway_services/presentation/services_details/programming/view/point_sale.dart';
 import 'package:onsetway_services/presentation/services_details/programming/widget/card_model.dart';
 
 abstract class BaseCardWidget extends StatelessWidget {

@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:onsetway_services/constitem/const_colors.dart';
 import 'package:onsetway_services/helper/responsive_ui.dart';
-import 'package:onsetway_services/presentation/services_details/programming/view/point_sale.dart';
 import 'package:onsetway_services/presentation/services_details/programming/widget/action_button.dart';
 import 'package:onsetway_services/presentation/services_details/programming/widget/animation_manger.dart';
 import 'package:onsetway_services/presentation/services_details/programming/widget/card_model.dart';
