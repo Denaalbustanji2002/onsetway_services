@@ -6,6 +6,8 @@ import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, TargetPlatform;
 import '../../../constitem/const_colors.dart';
 import '../../../helper/responsive_ui.dart';
+import '../../services_details/core_categ/cyber_security.dart';
+import '../../services_details/core_categ/networking.dart';
 import '../../services_details/hardware/view/hardware_screen.dart';
 import '../../services_details/programming/view/programming_screen.dart';
 import '../../services_details/programming/widget/appbar_pop.dart';
@@ -144,12 +146,24 @@ class _CoreScreenState extends State<CoreScreen> with TickerProviderStateMixin {
             'Worried about keeping your data and systems safe from attacks?',
         'icon': Icons.security_outlined,
         'imagePath': 'assets/picture/cyber.webp',
+        'onTap': (BuildContext context) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const CyberSecurityScreen ()),
+          );
+        },
       },
       {
         'title': 'Networking',
         'subtitle': 'Need faster, safer, and smarter connectivity?',
         'icon': Icons.network_wifi,
         'imagePath': 'assets/picture/networking.webp',
+        'onTap': (BuildContext context) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const NetworkingScreen()),
+          );
+        },
       },
       {
         'title': 'Artificial Intelligence',

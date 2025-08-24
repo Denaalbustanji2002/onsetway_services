@@ -1,9 +1,12 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:onsetway_services/presentation/services_details/hardware/view/pcs_computer.dart';
 import '../../../../constitem/const_colors.dart';
 import '../../../../helper/responsive_ui.dart';
 import '../../programming/widget/appbar_pop.dart';
+import 'cctv_system_screen.dart';
+import 'networking_hardware.dart';
 
 class HardwareScreen extends StatefulWidget {
   const HardwareScreen({super.key});
@@ -19,14 +22,14 @@ class _HardwareScreenState extends State<HardwareScreen> {
       'subtitle':
           'At Onset Way, we offer smart home and CCTV solutions for seamless security and control anywhere.',
       'icon': Icons.videocam_outlined,
-      'imagePath': 'assets/hardware/cctv/cctv1.webp',
+      'imagePath': 'assets/hardware/cctv/cctv9.webp',
       'benefits': [
         'Dome Camera',
         'PTZ Camera',
         'Night Vision & Motion Alerts',
         'Mobile Monitoring',
       ],
-      'onTap': () {},
+      'builder': (BuildContext ctx) => const CctvSystemScreen(),
     },
     {
       'title': 'PC\'S & Computer Hardware',
@@ -40,7 +43,7 @@ class _HardwareScreenState extends State<HardwareScreen> {
         'Laptops & Notebooks',
         'All-in-One PCs',
       ],
-      'onTap': () {},
+      'builder': (BuildContext ctx) => const PcsComputerScreen(),
     },
     {
       'title': 'Networking Hardware',
@@ -54,7 +57,7 @@ class _HardwareScreenState extends State<HardwareScreen> {
         'Cables & Connectors .',
         'Network Interface Cards (NICs) .',
       ],
-      'onTap': () {},
+      'builder': (BuildContext ctx) => const NetworkingHardwareScreen(),
     },
   ];
 
@@ -63,25 +66,30 @@ class _HardwareScreenState extends State<HardwareScreen> {
     return Theme.of(context).platform == TargetPlatform.android ? 0.8 : 1.0;
   }
 
-  // Helper function to scale dimensions for Android
   double s(double value) => value * androidScaleFactor;
+
+  void _comingSoon() {
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('قريبًا…')));
+  }
 
   @override
   Widget build(BuildContext context) {
     final responsive = ResponsiveUi(context);
 
     return OWPScaffold(
-      title: 'Hardware',
+      title: 'Programming',
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
             colors: [
               ConstColor.black,
               ConstColor.black.withOpacity(0.95),
               ConstColor.black,
             ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
         ),
         child: SingleChildScrollView(
@@ -115,7 +123,7 @@ class _HardwareScreenState extends State<HardwareScreen> {
                         colors: [ConstColor.gold, ConstColor.white],
                       ).createShader(rect),
                       child: Text(
-                        'Smart Technology, Stronger Business .',
+                        'Transform Your Business with Technology',
                         style: TextStyle(
                           fontSize: s(responsive.isMobile ? 20 : 28),
                           fontWeight: FontWeight.bold,
@@ -124,7 +132,6 @@ class _HardwareScreenState extends State<HardwareScreen> {
                         textAlign: TextAlign.center,
                       ),
                     ),
-                    SizedBox(height: s(2)),
                   ],
                 ),
               ),
@@ -144,7 +151,7 @@ class _HardwareScreenState extends State<HardwareScreen> {
                 ),
                 itemBuilder: (context, index) {
                   final category = categories[index];
-                  return _buildCategoryCard(category, responsive, index);
+                  return _buildCategoryCard(category, responsive);
                 },
               ),
             ],
@@ -155,49 +162,54 @@ class _HardwareScreenState extends State<HardwareScreen> {
   }
 
   Widget _buildCategoryCard(
-    Map<String, dynamic> category,
-    ResponsiveUi responsive,
-    int index,
-  ) {
+      Map<String, dynamic> category,
+      ResponsiveUi responsive,
+      ) {
+    final builder = category['builder'] as WidgetBuilder?;
+
     return GestureDetector(
-      onTap: category['onTap'],
-      child: Container(
+      onTap: () {
+        if (builder != null) {
+          Navigator.push(context, MaterialPageRoute(builder: builder));
+        } else {
+          _comingSoon();
+        }
+      },
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 250),
+        curve: Curves.easeInOut,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(s(24)),
-          color: Colors.black,
+          borderRadius: BorderRadius.circular(s(32)),
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [ConstColor.black, ConstColor.black.withOpacity(0.9)],
+            colors: [
+              ConstColor.black.withOpacity(0.85),
+              ConstColor.black.withOpacity(0.7),
+            ],
           ),
           border: Border.all(
-            color: ConstColor.gold.withOpacity(0.3),
-            width: s(1.5),
+            color: ConstColor.gold.withOpacity(0.35),
+            width: s(1.2),
           ),
           boxShadow: [
             BoxShadow(
-              color: ConstColor.gold.withOpacity(0.2),
-              blurRadius: s(15),
+              color: ConstColor.gold.withOpacity(0.15),
+              blurRadius: s(25),
               spreadRadius: s(2),
-              offset: const Offset(0, 8),
-            ),
-            BoxShadow(
-              color: Colors.black.withOpacity(0.3),
-              blurRadius: s(10),
-              offset: const Offset(0, 4),
+              offset: const Offset(0, 10),
             ),
           ],
         ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Enhanced Image Section with Overlay
+            // صورة مع أيقونة
             Expanded(
               flex: 3,
               child: ClipRRect(
                 borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(s(24)),
-                  topRight: Radius.circular(s(24)),
+                  topLeft: Radius.circular(s(32)),
+                  topRight: Radius.circular(s(32)),
                 ),
                 child: Stack(
                   children: [
@@ -210,12 +222,12 @@ class _HardwareScreenState extends State<HardwareScreen> {
                     Container(
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
                           colors: [
                             Colors.transparent,
-                            ConstColor.black.withOpacity(0.7),
+                            ConstColor.black.withOpacity(0.8),
                           ],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
                         ),
                       ),
                     ),
@@ -223,22 +235,29 @@ class _HardwareScreenState extends State<HardwareScreen> {
                       top: s(16),
                       right: s(16),
                       child: Container(
-                        padding: EdgeInsets.all(s(8)),
+                        padding: EdgeInsets.all(s(10)),
                         decoration: BoxDecoration(
-                          color: ConstColor.gold.withOpacity(0.9),
-                          borderRadius: BorderRadius.circular(s(12)),
+                          gradient: LinearGradient(
+                            colors: [
+                              ConstColor.gold,
+                              ConstColor.gold.withOpacity(0.8),
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(s(14)),
                           boxShadow: [
                             BoxShadow(
-                              color: ConstColor.gold.withOpacity(0.3),
-                              blurRadius: s(8),
-                              spreadRadius: s(1),
+                              color: ConstColor.gold.withOpacity(0.4),
+                              blurRadius: s(12),
+                              offset: const Offset(0, 6),
                             ),
                           ],
                         ),
                         child: Icon(
                           category['icon'],
                           color: ConstColor.black,
-                          size: s(24),
+                          size: s(26),
                         ),
                       ),
                     ),
@@ -247,7 +266,7 @@ class _HardwareScreenState extends State<HardwareScreen> {
               ),
             ),
 
-            // Enhanced Content Section
+            // النصوص + المزايا + زر
             Expanded(
               flex: 4,
               child: Padding(
@@ -255,149 +274,115 @@ class _HardwareScreenState extends State<HardwareScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Title with Gradient Effect
-                    ShaderMask(
-                      shaderCallback: (rect) => LinearGradient(
-                        colors: [ConstColor.gold, ConstColor.white],
-                      ).createShader(rect),
-                      child: Text(
-                        category['title'],
-                        style: TextStyle(
-                          fontSize: s(responsive.isMobile ? 20 : 22),
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
+                    Text(
+                      category['title'],
+                      style: TextStyle(
+                        fontSize: s(responsive.isMobile ? 20 : 22),
+                        fontWeight: FontWeight.bold,
+                        foreground: Paint()
+                          ..shader = LinearGradient(
+                            colors: [ConstColor.gold, Colors.white],
+                          ).createShader(Rect.fromLTWH(0, 0, 200, 70)),
+                        shadows: [
+                          Shadow(
+                            blurRadius: 6,
+                            color: Colors.black.withOpacity(0.6),
+                            offset: const Offset(2, 2),
+                          ),
+                        ],
                       ),
                     ),
-
                     SizedBox(height: s(8)),
-
-                    // Subtitle
                     Text(
                       category['subtitle'],
                       style: TextStyle(
-                        fontSize: s(responsive.isMobile ? 12 : 13),
-                        color: ConstColor.white.withOpacity(0.8),
-                        height: s(1.4),
+                        fontSize: s(13),
+                        color: ConstColor.white.withOpacity(0.85),
                         fontWeight: FontWeight.w500,
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
+                    SizedBox(height: s(12)),
 
-                    SizedBox(height: s(10)),
-
-                    // Benefits Section
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.lightbulb_outline,
-                                color: ConstColor.gold,
-                                size: s(16),
-                              ),
-                              SizedBox(width: s(6)),
-                              Text(
-                                'by Onset Way — What You Get?',
+                    // قائمة المزايا
+                    ...((category['benefits'] as List).cast<String>()).map(
+                          (benefit) => Padding(
+                        padding: EdgeInsets.only(bottom: s(6)),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.check_circle,
+                              size: s(14),
+                              color: ConstColor.gold,
+                            ),
+                            SizedBox(width: s(8)),
+                            Expanded(
+                              child: Text(
+                                benefit,
                                 style: TextStyle(
-                                  fontSize: s(14),
-                                  fontWeight: FontWeight.w600,
-                                  color: ConstColor.gold,
+                                  fontSize: s(12),
+                                  color: ConstColor.white.withOpacity(0.9),
                                 ),
                               ),
-                            ],
-                          ),
-                          SizedBox(height: s(8)),
-                          Expanded(
-                            child: ListView.builder(
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: category['benefits'].length,
-                              itemBuilder: (context, benefitIndex) {
-                                return Padding(
-                                  padding: EdgeInsets.only(bottom: s(6)),
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                        margin: EdgeInsets.only(top: s(6)),
-                                        width: s(4),
-                                        height: s(4),
-                                        decoration: BoxDecoration(
-                                          color: ConstColor.gold,
-                                          borderRadius: BorderRadius.circular(
-                                            s(2),
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(width: s(8)),
-                                      Expanded(
-                                        child: Text(
-                                          category['benefits'][benefitIndex],
-                                          style: TextStyle(
-                                            fontSize: s(
-                                              responsive.isMobile ? 11 : 12,
-                                            ),
-                                            color: ConstColor.white.withOpacity(
-                                              s(0.9),
-                                            ),
-                                            height: s(1.3),
-                                          ),
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
 
-                    // CTA Button
-                    SizedBox(height: s(8)),
-                    Container(
+                    const Spacer(),
+
+                    // زر Learn More
+                    SizedBox(
                       width: double.infinity,
-                      height: s(36),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            ConstColor.gold,
-                            ConstColor.gold.withOpacity(0.8),
-                          ],
-                        ),
-                        borderRadius: BorderRadius.circular(s(18)),
-                        boxShadow: [
-                          BoxShadow(
-                            color: ConstColor.gold.withOpacity(0.3),
-                            blurRadius: s(8),
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
+                      height: s(40),
                       child: ElevatedButton(
-                        onPressed: category['onTap'],
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.transparent,
-                          shadowColor: Colors.transparent,
+                        onPressed: () {
+                          if (builder != null) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: builder),
+                            );
+                          } else {
+                            _comingSoon();
+                          }
+                        },
+                        style:
+                        ElevatedButton.styleFrom(
+                          padding: EdgeInsets.zero,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(s(18)),
+                            borderRadius: BorderRadius.circular(s(20)),
+                          ),
+                        ).copyWith(
+                          backgroundColor: MaterialStateProperty.all(
+                            Colors.transparent,
+                          ),
+                          shadowColor: MaterialStateProperty.all(
+                            Colors.transparent,
                           ),
                         ),
-                        child: Text(
-                          'Learn More',
-                          style: TextStyle(
-                            color: ConstColor.black,
-                            fontWeight: FontWeight.w600,
-                            fontSize: s(14),
+                        child: Ink(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                ConstColor.gold,
+                                ConstColor.gold.withOpacity(0.8),
+                              ],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            borderRadius: BorderRadius.circular(s(20)),
+                          ),
+                          child: Center(
+                            child: Text(
+                              'Learn More',
+                              style: TextStyle(
+                                color: ConstColor.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize: s(14),
+                              ),
+                            ),
                           ),
                         ),
                       ),
@@ -412,3 +397,11 @@ class _HardwareScreenState extends State<HardwareScreen> {
     );
   }
 }
+
+// ===================== شاشات بديلة (Placeholder) =====================
+// استبدلها بإصداراتك/ملفاتك الفعلية عند توفرها
+
+
+
+
+

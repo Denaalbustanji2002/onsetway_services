@@ -35,6 +35,7 @@ flutter:
     - assets/hardware/cctv/
     - assets/hardware/pc/
     - assets/hardware/network/
+    - assets/core/
 
   fonts:
     - family: Northwell

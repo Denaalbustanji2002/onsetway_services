@@ -2,9 +2,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:onsetway_services/presentation/services_details/programming/view/point_sale.dart';
+import 'package:onsetway_services/presentation/services_details/programming/view/web_app_screen.dart';
 import '../../../../constitem/const_colors.dart';
 import '../../../../helper/responsive_ui.dart';
 import '../widget/appbar_pop.dart';
+import 'desktop_app_screen.dart';
+import 'mobile_app_screen.dart';
 
 class ProgrammingScreen extends StatefulWidget {
   const ProgrammingScreen({super.key});
@@ -408,53 +411,7 @@ class _ProgrammingScreenState extends State<ProgrammingScreen> {
 // ===================== شاشات بديلة (Placeholder) =====================
 // استبدلها بإصداراتك/ملفاتك الفعلية عند توفرها
 
-class MobileAppScreen extends StatelessWidget {
-  const MobileAppScreen({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return OWPScaffold(
-      title: 'Mobile Application',
-      body: Center(
-        child: Text(
-          'Mobile Application Details',
-          style: TextStyle(color: ConstColor.white),
-        ),
-      ),
-    );
-  }
-}
 
-class WebAppScreen extends StatelessWidget {
-  const WebAppScreen({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return OWPScaffold(
-      title: 'Web Applications',
-      body: Center(
-        child: Text(
-          'Web Applications Details',
-          style: TextStyle(color: ConstColor.white),
-        ),
-      ),
-    );
-  }
-}
 
-class DesktopAppScreen extends StatelessWidget {
-  const DesktopAppScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return OWPScaffold(
-      title: 'Desktop Applications',
-      body: Center(
-        child: Text(
-          'Desktop Applications Details',
-          style: TextStyle(color: ConstColor.white),
-        ),
-      ),
-    );
-  }
-}
