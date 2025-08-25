@@ -88,12 +88,18 @@ Widget buildEnhancedCategoryCard(
         fit: StackFit.expand,
         children: [
           // الخلفية
-          Image.asset(
-            category['imagePath'] as String,
+          // الخلفية باستخدام ResizeImage لتقليل استهلاك الذاكرة
+          Image(
+            image: ResizeImage(
+              AssetImage(category['imagePath'] as String),
+              width: 400,  // حجم افتراضي مناسب للكرت
+              height: 200, // نفس ارتفاع الكرت تقريبًا
+            ),
             fit: BoxFit.cover,
             width: double.infinity,
             height: double.infinity,
           ),
+
 
           // طبقة التدرّج
           Container(

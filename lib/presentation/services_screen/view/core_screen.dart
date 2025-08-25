@@ -6,7 +6,12 @@ import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, TargetPlatform;
 import '../../../constitem/const_colors.dart';
 import '../../../helper/responsive_ui.dart';
+import '../../services_details/core_categ/ai_screen.dart';
+import '../../services_details/core_categ/cloud_computing.dart';
 import '../../services_details/core_categ/cyber_security.dart';
+import '../../services_details/core_categ/estab_screen.dart';
+import '../../services_details/core_categ/maintenance_screen.dart';
+import '../../services_details/core_categ/monitoring_screen.dart';
 import '../../services_details/core_categ/networking.dart';
 import '../../services_details/hardware/view/hardware_screen.dart';
 import '../../services_details/programming/view/programming_screen.dart';
@@ -31,7 +36,6 @@ class _CoreScreenState extends State<CoreScreen> with TickerProviderStateMixin {
   late Animation<double> _cardsStaggerAnimation;
   late Animation<double> _backgroundAnimation;
 
-  // ⬇️ عامل التصغير للـ Android
   final bool isAndroid = defaultTargetPlatform == TargetPlatform.android;
   final double factor = 0.8; // -20%
 
@@ -116,10 +120,9 @@ class _CoreScreenState extends State<CoreScreen> with TickerProviderStateMixin {
     final coreCategories = [
       {
         'title': 'Programming',
-        'subtitle':
-            'Need custom software that actually fits your business — not the other way around?',
+        'subtitle': 'Need custom software that actually fits your business?',
         'icon': Icons.code,
-        'imagePath': 'assets/picture/home2.webp',
+        'imagePath': 'assets/picture/programming4.webp',
         'onTap': (BuildContext context) {
           Navigator.push(
             context,
@@ -129,10 +132,9 @@ class _CoreScreenState extends State<CoreScreen> with TickerProviderStateMixin {
       },
       {
         'title': 'Hardware',
-        'subtitle':
-            'Looking for reliable hardware solutions that grow with your business?',
+        'subtitle': 'Looking for reliable hardware solutions?',
         'icon': Icons.computer,
-        'imagePath': 'assets/picture/home1.webp',
+        'imagePath': 'assets/picture/hardware4.webp',
         'onTap': (BuildContext context) {
           Navigator.push(
             context,
@@ -142,14 +144,14 @@ class _CoreScreenState extends State<CoreScreen> with TickerProviderStateMixin {
       },
       {
         'title': 'Cyber Security',
-        'subtitle':
-            'Worried about keeping your data and systems safe from attacks?',
+        'subtitle': 'Keep your data and systems safe from attacks.',
         'icon': Icons.security_outlined,
         'imagePath': 'assets/picture/cyber.webp',
         'onTap': (BuildContext context) {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const CyberSecurityScreen ()),
+            MaterialPageRoute(
+                builder: (context) => const CyberSecurityScreen()),
           );
         },
       },
@@ -167,38 +169,55 @@ class _CoreScreenState extends State<CoreScreen> with TickerProviderStateMixin {
       },
       {
         'title': 'Artificial Intelligence',
-        'subtitle':
-            'Stay ahead with data-driven decisions powered by smart AI systems.',
+        'subtitle': 'Stay ahead with AI-driven systems.',
         'icon': Icons.smart_toy_outlined,
         'imagePath': 'assets/picture/AI.webp',
+        'onTap': (BuildContext context) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const AiScreen()),
+          );
+        },
       },
       {
         'title': 'Maintenance',
-        'subtitle':
-            'Let OneWay handle your IT maintenance – so you can focus on growth, not glitches.',
+        'subtitle': 'Let OneWay handle your IT maintenance.',
         'icon': Icons.settings,
         'imagePath': 'assets/picture/card1.webp',
+        'onTap': (BuildContext context) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const MaintenanceScreen()),
+          );
+        },
       },
       {
         'title': 'Cloud Computing',
-        'subtitle':
-            'Unlock the full potential of your business with scalable cloud infrastructure',
+        'subtitle': 'Unlock your business with scalable cloud.',
         'icon': Icons.cloud,
         'imagePath': 'assets/picture/cloud.webp',
+        'onTap': (BuildContext context) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const CloudComputingScreen()),
+          );
+        },
       },
-      {
-        'title': 'Establish And Rebuild',
+      { 'title': 'Establish And Rebuild',
         'subtitle': 'Is it time to modernize your outdated systems?',
         'icon': Icons.settings_applications,
         'imagePath': 'assets/picture/Esta.webp',
-      },
-      {
-        'title': 'Monitoring And Evaluation',
-        'subtitle':
-            'Is your business making data-driven decisions in real time?',
-        'icon': Icons.analytics,
-        'imagePath': 'assets/picture/aaaaaaaa.webp',
-      },
+        'onTap': (BuildContext context)
+      { Navigator.push( context, MaterialPageRoute(builder: (context) => const EstablishAndRebuildScreen()), );
+        }, },
+      { 'title': 'Monitoring And Evaluation',
+        'subtitle': 'Is your business making data-driven decisions in real time?',
+        'icon': Icons.analytics, ''
+          'imagePath': 'assets/picture/aaaaaaaa.webp',
+        'onTap': (BuildContext context)
+        { Navigator.push( context, MaterialPageRoute(builder: (context) => const MonitoringAndEvaluationScreen()), ); }, },
     ];
 
     return OWPScaffold(
@@ -221,15 +240,16 @@ class _CoreScreenState extends State<CoreScreen> with TickerProviderStateMixin {
                 transform: GradientRotation(_backgroundAnimation.value * 0.2),
               ),
             ),
-            child: SingleChildScrollView(
+            child: ListView.builder(
               physics: const BouncingScrollPhysics(),
               padding: EdgeInsets.all(
                 responsive.width(4) * (isAndroid ? factor : 1.0),
               ),
-              child: Column(
-                children: [
-                  // ===== Header Section =====
-                  AnimatedBuilder(
+              itemCount: coreCategories.length + 2, // +2 for header & back btn
+              itemBuilder: (context, index) {
+                if (index == 0) {
+                  // Header section
+                  return AnimatedBuilder(
                     animation: _headerAnimationController,
                     builder: (context, child) {
                       return SlideTransition(
@@ -263,80 +283,29 @@ class _CoreScreenState extends State<CoreScreen> with TickerProviderStateMixin {
                                   color: ConstColor.gold.withOpacity(0.3),
                                   width: 1,
                                 ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: ConstColor.gold.withOpacity(0.1),
-                                    blurRadius: 20,
-                                    offset: const Offset(0, 8),
-                                  ),
-                                ],
                               ),
                               child: Column(
                                 children: [
-                                  ShaderMask(
-                                    shaderCallback: (rect) => LinearGradient(
-                                      colors: [
-                                        ConstColor.white,
-                                        ConstColor.gold,
-                                        ConstColor.darkGold,
-                                        ConstColor.white,
-                                      ],
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight,
-                                    ).createShader(rect),
-                                    child: Text(
-                                      'Core Technology Services',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontSize:
-                                            (responsive.isMobile ? 22 : 28) *
-                                            (isAndroid ? factor : 1.0),
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white,
-                                        letterSpacing: 0.8,
-                                      ),
+                                  Text(
+                                    'Core Technology Services',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: (responsive.isMobile ? 22 : 28) *
+                                          (isAndroid ? factor : 1.0),
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
                                     ),
                                   ),
-                                  SizedBox(
-                                    height: 12 * (isAndroid ? factor : 1.0),
-                                  ),
+                                  const SizedBox(height: 12),
                                   Text(
                                     'Comprehensive solutions for modern businesses',
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                       fontSize:
-                                          (responsive.isMobile ? 12 : 16) *
+                                      (responsive.isMobile ? 12 : 16) *
                                           (isAndroid ? factor : 1.0),
                                       color: ConstColor.white.withOpacity(0.8),
-                                      letterSpacing: 0.3,
                                     ),
-                                  ),
-                                  SizedBox(
-                                    height: 14 * (isAndroid ? factor : 1.0),
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      buildStatItem(
-                                        '${coreCategories.length}',
-                                        'Services',
-                                        responsive,
-                                        factor: isAndroid ? factor : 1.0,
-                                      ),
-                                      buildStatItem(
-                                        '100+',
-                                        'Projects',
-                                        responsive,
-                                        factor: isAndroid ? factor : 1.0,
-                                      ),
-                                      buildStatItem(
-                                        '24/7',
-                                        'Support',
-                                        responsive,
-                                        factor: isAndroid ? factor : 1.0,
-                                      ),
-                                    ],
                                   ),
                                 ],
                               ),
@@ -345,63 +314,17 @@ class _CoreScreenState extends State<CoreScreen> with TickerProviderStateMixin {
                         ),
                       );
                     },
-                  ),
-
-                  // ===== Categories Grid =====
-                  AnimatedBuilder(
-                    animation: _cardsStaggerAnimation,
-                    builder: (context, child) {
-                      return Column(
-                        children: coreCategories.asMap().entries.map((entry) {
-                          final index = entry.key;
-                          final category = entry.value;
-                          final progress =
-                              (_cardsStaggerAnimation.value - (index * 0.1))
-                                  .clamp(0.0, 1.0);
-                          final cardAnimation = Curves.easeOutCubic.transform(
-                            progress,
-                          );
-
-                          return Transform.translate(
-                            offset: Offset(0, 50 * (1 - cardAnimation)),
-                            child: Opacity(
-                              opacity: cardAnimation,
-                              child: Container(
-                                margin: EdgeInsets.only(
-                                  bottom:
-                                      responsive.height(2.5) *
-                                      (isAndroid ? factor : 1.0),
-                                ),
-                                child: buildEnhancedCategoryCard(
-                                  category,
-                                  index,
-                                  responsive,
-                                  context,
-                                  factor: isAndroid ? factor : 1.0,
-                                ),
-                              ),
-                            ),
-                          );
-                        }).toList(),
-                      );
-                    },
-                  ),
-
-                  SizedBox(height: 32 * (isAndroid ? factor : 1.0)),
-
-                  // ===== Back to Home Button =====
-                  GestureDetector(
+                  );
+                } else if (index == coreCategories.length + 1) {
+                  // Back button
+                  return GestureDetector(
                     onTap: () => Navigator.pop(context),
                     child: Container(
-                      width: double.infinity,
-                      padding: EdgeInsets.symmetric(
-                        vertical: 16 * (isAndroid ? factor : 1.0),
-                      ),
+                      margin: const EdgeInsets.only(top: 20),
+                      padding: const EdgeInsets.symmetric(vertical: 16),
                       decoration: BoxDecoration(
                         color: Colors.black.withOpacity(0.6),
-                        borderRadius: BorderRadius.circular(
-                          16 * (isAndroid ? factor : 1.0),
-                        ),
+                        borderRadius: BorderRadius.circular(16),
                         border: Border.all(
                           color: ConstColor.gold.withOpacity(0.3),
                           width: 1,
@@ -409,27 +332,44 @@ class _CoreScreenState extends State<CoreScreen> with TickerProviderStateMixin {
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.arrow_back,
-                            color: ConstColor.gold,
-                            size: 20 * (isAndroid ? factor : 1.0),
-                          ),
-                          SizedBox(width: 8 * (isAndroid ? factor : 1.0)),
+                        children: const [
+                          Icon(Icons.arrow_back, color: Colors.amber),
+                          SizedBox(width: 8),
                           Text(
                             'Back to Home',
                             style: TextStyle(
-                              color: ConstColor.gold,
-                              fontSize: 16 * (isAndroid ? factor : 1.0),
+                              color: Colors.amber,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
                         ],
                       ),
                     ),
-                  ),
-                ],
-              ),
+                  );
+                } else {
+                  // Category card
+                  final category = coreCategories[index - 1];
+                  final progress =
+                  (_cardsStaggerAnimation.value - ((index - 1) * 0.1))
+                      .clamp(0.0, 1.0);
+                  final cardAnimation =
+                  Curves.easeOutCubic.transform(progress);
+
+                  return Transform.translate(
+                    offset: Offset(0, 50 * (1 - cardAnimation)),
+                    child: Opacity(
+                      opacity: cardAnimation,
+                      child: buildEnhancedCategoryCard(
+                        category,
+                        index,
+                        responsive,
+                        context,
+                        factor: isAndroid ? factor : 1.0,
+                      ),
+                    ),
+                  );
+                }
+              },
             ),
           );
         },
