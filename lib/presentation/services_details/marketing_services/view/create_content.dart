@@ -114,7 +114,7 @@ class _CreateContentScreenState extends State<CreateContentScreen>
     double scale(double value) => value * androidScaleFactor;
 
     return OWPScaffold(
-      title: 'SEO',
+      title: 'Content Creation',
       body: Column(
         children: [
           SlideTransition(
