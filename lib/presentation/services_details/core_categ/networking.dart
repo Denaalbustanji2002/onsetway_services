@@ -65,13 +65,13 @@ class _NetworkingScreenState extends State<NetworkingScreen>
         "Advanced Security Built-In",
         "Future-Proof Infrastructure",
         "Cloud & Edge Solutions",
-        "IoT Network Management"
+        "IoT Network Management",
       ],
       icon: Icons.verified_outlined, // ممتاز للثقة والاعتمادية
       image: "assets/picture/about us.webp",
       accentColor: Colors.purple,
-    ),];
-
+    ),
+  ];
 
   @override
   void initState() {
