@@ -287,7 +287,7 @@ class _ProgrammingScreenState extends State<ProgrammingScreen> {
                     Text(
                       category['title'],
                       style: TextStyle(
-                        fontSize: s(responsive.isMobile ? 20 : 22),
+                        fontSize: s(responsive.isMobile ? 18 : 22),
                         fontWeight: FontWeight.bold,
                         foreground: Paint()
                           ..shader = LinearGradient(
@@ -302,7 +302,7 @@ class _ProgrammingScreenState extends State<ProgrammingScreen> {
                         ],
                       ),
                     ),
-                    SizedBox(height: s(8)),
+                    SizedBox(height: s(5)),
                     Text(
                       category['subtitle'],
                       style: TextStyle(
@@ -318,7 +318,7 @@ class _ProgrammingScreenState extends State<ProgrammingScreen> {
                     // قائمة المزايا
                     ...((category['benefits'] as List).cast<String>()).map(
                       (benefit) => Padding(
-                        padding: EdgeInsets.only(bottom: s(6)),
+                        padding: EdgeInsets.only(bottom: s(4)),
                         child: Row(
                           children: [
                             Icon(
@@ -326,7 +326,7 @@ class _ProgrammingScreenState extends State<ProgrammingScreen> {
                               size: s(14),
                               color: ConstColor.gold,
                             ),
-                            SizedBox(width: s(8)),
+                            SizedBox(width: s(5)),
                             Expanded(
                               child: Text(
                                 benefit,
@@ -346,7 +346,7 @@ class _ProgrammingScreenState extends State<ProgrammingScreen> {
                     // زر Learn More
                     SizedBox(
                       width: double.infinity,
-                      height: s(40),
+                      height: s(35),
                       child: ElevatedButton(
                         onPressed: () {
                           if (builder != null) {
@@ -390,7 +390,7 @@ class _ProgrammingScreenState extends State<ProgrammingScreen> {
                               style: TextStyle(
                                 color: ConstColor.black,
                                 fontWeight: FontWeight.bold,
-                                fontSize: s(14),
+                                fontSize: s(12),
                               ),
                             ),
                           ),
@@ -408,8 +408,7 @@ class _ProgrammingScreenState extends State<ProgrammingScreen> {
   }
 }
 
-// ===================== شاشات بديلة (Placeholder) =====================
-// استبدلها بإصداراتك/ملفاتك الفعلية عند توفرها
+
 
 
 

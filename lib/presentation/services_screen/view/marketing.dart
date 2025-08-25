@@ -8,6 +8,13 @@ import 'package:flutter/foundation.dart'
 
 import '../../../constitem/const_colors.dart';
 import '../../../helper/responsive_ui.dart';
+import '../../services_details/core_categ/maintenance_screen.dart';
+import '../../services_details/marketing_services/view/create_content.dart';
+import '../../services_details/marketing_services/view/design_and_branding.dart';
+import '../../services_details/marketing_services/view/digital_marketing.dart';
+import '../../services_details/marketing_services/view/photography_screen.dart';
+import '../../services_details/marketing_services/view/seo_screen.dart';
+import '../../services_details/marketing_services/view/social_media.dart';
 import '../../services_details/programming/widget/appbar_pop.dart';
 import '../widget/build_card.dart';
 
@@ -108,11 +115,10 @@ class _MarketingScreenState extends State<MarketingScreen>
   Widget build(BuildContext context) {
     final responsive = ResponsiveUi(context);
 
-    // تصغير عام على Android فقط
     final bool isAndroid = defaultTargetPlatform == TargetPlatform.android;
     final double factor = isAndroid ? 0.7 : 1.0;
 
-    double sf(double v) => v * factor; // helper
+    double sf(double v) => v * factor;
 
     final coreCategories = [
       {
@@ -120,38 +126,79 @@ class _MarketingScreenState extends State<MarketingScreen>
         'subtitle': 'Your business is real. Shouldn’t your brand be too?',
         'icon': Icons.design_services,
         'imagePath': 'assets/picture/design.webp',
+        'onTap': (BuildContext context) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const DesignAndBrandingScreen()),
+          );
+        },
       },
       {
         'title': 'Digital Marketing & Advertising',
-        'subtitle':
-            'Struggling to get your ads noticed by potential customers?',
+        'subtitle': 'Struggling to get your ads noticed by potential customers?',
         'icon': Icons.campaign_outlined,
         'imagePath': 'assets/picture/ai-integration-.webp',
+        'onTap': (BuildContext context) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const DigitalMarketingAdvertisingScreen()),
+          );
+        },
       },
+
       {
         'title': 'Social Media Management',
-        'subtitle':
-            'Are your social media accounts not delivering real business results?',
+        'subtitle': 'Are your social media accounts not delivering real business results?',
         'icon': Icons.people_alt,
         'imagePath': 'assets/picture/social.webp',
+        'onTap': (BuildContext context) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const SocialMediaScreen()),
+          );
+        },
       },
       {
         'title': 'SEO (search engine optimization)',
         'subtitle': 'Not getting enough organic traffic to your website?',
         'icon': Icons.search,
         'imagePath': 'assets/picture/seo5.png',
+        'onTap': (BuildContext context) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const SeoScreen()),
+          );
+        },
       },
       {
         'title': 'Content Creation',
         'subtitle': 'Posting just to post?',
         'icon': Icons.article_outlined,
         'imagePath': 'assets/picture/content.webp',
+        'onTap': (BuildContext context) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const CreateContentScreen()),
+          );
+        },
       },
       {
         'title': 'Photography & Videography',
         'subtitle': 'Is your brand being seen… or just looked at?',
         'icon': Icons.camera_alt_outlined,
         'imagePath': 'assets/picture/ph2.jpg',
+        'onTap': (BuildContext context) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const PhotographyAndVideographyScreen()),
+          );
+        },
       },
     ];
 
@@ -175,13 +222,14 @@ class _MarketingScreenState extends State<MarketingScreen>
           child: OWPScaffold(
             title: "Marketing Services",
             canPop: true,
-            body: SingleChildScrollView(
+            body: ListView.builder(
               physics: const BouncingScrollPhysics(),
               padding: EdgeInsets.all(responsive.width(4) * factor),
-              child: Column(
-                children: [
+              itemCount: coreCategories.length + 2, // header + back button
+              itemBuilder: (context, index) {
+                if (index == 0) {
                   // ====== Header Animation ======
-                  AnimatedBuilder(
+                  return AnimatedBuilder(
                     animation: _headerAnimationController,
                     builder: (context, child) {
                       return SlideTransition(
@@ -235,8 +283,7 @@ class _MarketingScreenState extends State<MarketingScreen>
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                         fontSize:
-                                            (responsive.isMobile ? 22 : 28) *
-                                            factor,
+                                        (responsive.isMobile ? 22 : 28) * factor,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.white,
                                         letterSpacing: 0.8,
@@ -249,16 +296,14 @@ class _MarketingScreenState extends State<MarketingScreen>
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                       fontSize:
-                                          (responsive.isMobile ? 12 : 16) *
-                                          factor,
+                                      (responsive.isMobile ? 12 : 16) * factor,
                                       color: ConstColor.white.withOpacity(0.8),
                                       letterSpacing: 0.3,
                                     ),
                                   ),
                                   SizedBox(height: sf(14)),
                                   Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                     children: [
                                       buildStatItem(
                                         '${coreCategories.length}',
@@ -287,54 +332,14 @@ class _MarketingScreenState extends State<MarketingScreen>
                         ),
                       );
                     },
-                  ),
-
-                  // ====== Cards Animation ======
-                  AnimatedBuilder(
-                    animation: _cardsStaggerAnimation,
-                    builder: (context, child) {
-                      return Column(
-                        children: coreCategories.asMap().entries.map((entry) {
-                          final index = entry.key;
-                          final category = entry.value;
-
-                          final progress =
-                              (_cardsStaggerAnimation.value - (index * 0.1))
-                                  .clamp(0.0, 1.0);
-                          final cardAnimation = Curves.easeOutCubic.transform(
-                            progress,
-                          );
-
-                          return Transform.translate(
-                            offset: Offset(0, 50 * (1 - cardAnimation)),
-                            child: Opacity(
-                              opacity: cardAnimation,
-                              child: Container(
-                                margin: EdgeInsets.only(
-                                  bottom: responsive.height(2.5) * factor,
-                                ),
-                                child: buildEnhancedCategoryCard(
-                                  category,
-                                  index,
-                                  responsive,
-                                  context,
-                                  factor: factor, // ⬅️ تم تمرير عامل التصغير
-                                ),
-                              ),
-                            ),
-                          );
-                        }).toList(),
-                      );
-                    },
-                  ),
-
-                  SizedBox(height: sf(32)),
-
-                  // Back button at bottom
-                  GestureDetector(
+                  );
+                } else if (index == coreCategories.length + 1) {
+                  // ====== Back Button ======
+                  return GestureDetector(
                     onTap: () => Navigator.pop(context),
                     child: Container(
                       width: double.infinity,
+                      margin: EdgeInsets.only(top: sf(20)),
                       padding: EdgeInsets.symmetric(vertical: sf(16)),
                       decoration: BoxDecoration(
                         color: Colors.black.withOpacity(0.6),
@@ -364,9 +369,35 @@ class _MarketingScreenState extends State<MarketingScreen>
                         ],
                       ),
                     ),
-                  ),
-                ],
-              ),
+                  );
+                } else {
+                  // ====== Category Cards ======
+                  final category = coreCategories[index - 1];
+                  final progress =
+                  (_cardsStaggerAnimation.value - ((index - 1) * 0.1))
+                      .clamp(0.0, 1.0);
+                  final cardAnimation = Curves.easeOutCubic.transform(progress);
+
+                  return Transform.translate(
+                    offset: Offset(0, 50 * (1 - cardAnimation)),
+                    child: Opacity(
+                      opacity: cardAnimation,
+                      child: Container(
+                        margin: EdgeInsets.only(
+                          bottom: responsive.height(2.5) * factor,
+                        ),
+                        child: buildEnhancedCategoryCard(
+                          category,
+                          index,
+                          responsive,
+                          context,
+                          factor: factor,
+                        ),
+                      ),
+                    ),
+                  );
+                }
+              },
             ),
           ),
         );

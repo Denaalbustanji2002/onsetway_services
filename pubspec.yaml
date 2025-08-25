@@ -36,6 +36,7 @@ flutter:
     - assets/hardware/pc/
     - assets/hardware/network/
     - assets/core/
+    - assets/marketing/
 
   fonts:
     - family: Northwell

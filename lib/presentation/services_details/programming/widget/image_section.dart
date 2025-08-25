@@ -44,12 +44,17 @@ class ImageSection extends BaseCardWidget {
             ),
             child: Stack(
               children: [
-                Image.asset(
-                  feature.image,
+                Image(
+                  image: ResizeImage(
+                    AssetImage(feature.image),
+                    width: 300,  // حجم افتراضي مناسب للكرت
+                    height: 200, // نفس ارتفاع الكرت تقريبًا
+                  ),
                   fit: BoxFit.cover,
                   width: double.infinity,
                   height: double.infinity,
                 ),
+
                 Container(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
