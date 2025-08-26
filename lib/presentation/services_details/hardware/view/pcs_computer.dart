@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:onsetway_services/constitem/const_colors.dart';
 import 'package:onsetway_services/helper/responsive_ui.dart';
@@ -55,7 +54,6 @@ class _PcsComputerScreenState extends State<PcsComputerScreen>
       accentColor: Colors.green,
     ),
 
-
     FeatureCardModel(
       title: "Why Choose Onset Way?",
       description: "Trusted partner with proven track record of excellence",
@@ -64,7 +62,6 @@ class _PcsComputerScreenState extends State<PcsComputerScreen>
         "PC Supply & Delivery",
         "Upgrades & Customizations",
         "Setup & After-Sale Support",
-
       ],
       icon: Icons.verified_outlined,
       image: "assets/picture/about us.webp",

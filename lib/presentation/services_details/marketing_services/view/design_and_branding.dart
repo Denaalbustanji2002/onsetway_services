@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:onsetway_services/constitem/const_colors.dart';
 import 'package:onsetway_services/helper/responsive_ui.dart';
@@ -14,7 +13,8 @@ class DesignAndBrandingScreen extends StatefulWidget {
   const DesignAndBrandingScreen({super.key});
 
   @override
-  State<DesignAndBrandingScreen> createState() => _DesignAndBrandingScreenState();
+  State<DesignAndBrandingScreen> createState() =>
+      _DesignAndBrandingScreenState();
 }
 
 class _DesignAndBrandingScreenState extends State<DesignAndBrandingScreen>
@@ -29,7 +29,8 @@ class _DesignAndBrandingScreenState extends State<DesignAndBrandingScreen>
   final List<FeatureCardModel> features = [
     FeatureCardModel(
       title: "Creative Design Solutions",
-      description: "Distinctive visual identities that capture your brand's personality",
+      description:
+          "Distinctive visual identities that capture your brand's personality",
       bulletPoints: [
         "Unique and memorable logos",
         "Consistent visual brand guidelines",
@@ -54,7 +55,6 @@ class _DesignAndBrandingScreenState extends State<DesignAndBrandingScreen>
       image: "assets/picture/about us.webp",
       accentColor: Colors.purple,
     ),
-
   ];
 
   @override

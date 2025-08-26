@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:onsetway_services/constitem/const_colors.dart';
 import 'package:onsetway_services/helper/responsive_ui.dart';
@@ -14,10 +13,12 @@ class PhotographyAndVideographyScreen extends StatefulWidget {
   const PhotographyAndVideographyScreen({super.key});
 
   @override
-  State<PhotographyAndVideographyScreen> createState() => _PhotographyAndVideographyScreenState();
+  State<PhotographyAndVideographyScreen> createState() =>
+      _PhotographyAndVideographyScreenState();
 }
 
-class _PhotographyAndVideographyScreenState extends State<PhotographyAndVideographyScreen>
+class _PhotographyAndVideographyScreenState
+    extends State<PhotographyAndVideographyScreen>
     with TickerProviderStateMixin {
   final PageController _pageController = PageController(viewportFraction: 0.88);
   int currentPage = 0;
@@ -29,7 +30,8 @@ class _PhotographyAndVideographyScreenState extends State<PhotographyAndVideogra
   final List<FeatureCardModel> features = [
     FeatureCardModel(
       title: "Professional Visual Solutions",
-      description: "Stunning visuals that capture your brand and engage your audience",
+      description:
+          "Stunning visuals that capture your brand and engage your audience",
       bulletPoints: [
         "High-quality product photography for websites and e-commerce",
         "lifestyle shoots to build trust",
@@ -43,7 +45,8 @@ class _PhotographyAndVideographyScreenState extends State<PhotographyAndVideogra
 
     FeatureCardModel(
       title: "Why Choose Us?",
-      description: "Professional visuals that elevate your brand and connect with your audience",
+      description:
+          "Professional visuals that elevate your brand and connect with your audience",
       bulletPoints: [
         "Capture attention and enhance professionalism",
         "Increase engagement across channels",
@@ -53,8 +56,6 @@ class _PhotographyAndVideographyScreenState extends State<PhotographyAndVideogra
       image: "assets/picture/about us.webp",
       accentColor: Colors.purple,
     ),
-
-
   ];
 
   @override
@@ -157,4 +158,3 @@ class _PhotographyAndVideographyScreenState extends State<PhotographyAndVideogra
     );
   }
 }
-

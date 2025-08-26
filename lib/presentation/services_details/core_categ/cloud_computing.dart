@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_import
+
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
@@ -48,7 +50,8 @@ class _CloudComputingScreenState extends State<CloudComputingScreen>
         "Tailored services to reduce IT costs",
         "Seamless migration and modernization support",
       ],
-      icon: Icons.cloud_done_outlined, // رمز السحابة مع علامة صح للأمان والجاهزية
+      icon:
+          Icons.cloud_done_outlined, // رمز السحابة مع علامة صح للأمان والجاهزية
       image: "assets/core/cloud2.jpg",
       accentColor: Colors.green,
     ),
@@ -69,7 +72,6 @@ class _CloudComputingScreenState extends State<CloudComputingScreen>
       accentColor: Colors.purple,
     ),
   ];
-
 
   @override
   void initState() {

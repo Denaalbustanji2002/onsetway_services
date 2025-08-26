@@ -1,5 +1,7 @@
+// ignore_for_file: file_names, use_key_in_widget_constructors, deprecated_member_use
+
 import 'dart:io';
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/material.dart';
 import 'package:onsetway_services/constitem/const_colors.dart';
 import 'package:onsetway_services/helper/responsive_ui.dart';

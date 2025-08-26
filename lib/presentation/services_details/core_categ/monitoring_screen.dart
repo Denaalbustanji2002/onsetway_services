@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:onsetway_services/constitem/const_colors.dart';
 import 'package:onsetway_services/helper/responsive_ui.dart';
@@ -14,10 +13,12 @@ class MonitoringAndEvaluationScreen extends StatefulWidget {
   const MonitoringAndEvaluationScreen({super.key});
 
   @override
-  State<MonitoringAndEvaluationScreen> createState() => _MonitoringAndEvaluationScreenState();
+  State<MonitoringAndEvaluationScreen> createState() =>
+      _MonitoringAndEvaluationScreenState();
 }
 
-class _MonitoringAndEvaluationScreenState extends State<MonitoringAndEvaluationScreen>
+class _MonitoringAndEvaluationScreenState
+    extends State<MonitoringAndEvaluationScreen>
     with TickerProviderStateMixin {
   final PageController _pageController = PageController(viewportFraction: 0.88);
   int currentPage = 0;
@@ -64,9 +65,7 @@ class _MonitoringAndEvaluationScreenState extends State<MonitoringAndEvaluationS
       image: "assets/picture/about us.webp",
       accentColor: Colors.purple,
     ),
-
   ];
-
 
   @override
   void initState() {

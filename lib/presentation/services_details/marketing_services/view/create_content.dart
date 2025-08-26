@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:onsetway_services/constitem/const_colors.dart';
 import 'package:onsetway_services/helper/responsive_ui.dart';
@@ -42,7 +41,8 @@ class _CreateContentScreenState extends State<CreateContentScreen>
 
     FeatureCardModel(
       title: "Why Choose Us?",
-      description: "Content that engages, builds authority, and strengthens your brand",
+      description:
+          "Content that engages, builds authority, and strengthens your brand",
       bulletPoints: [
         "Attract and retain customers effectively",
         "Build trust and authority in your industry",
@@ -52,9 +52,6 @@ class _CreateContentScreenState extends State<CreateContentScreen>
       image: "assets/picture/about us.webp",
       accentColor: Colors.purple,
     ),
-
-
-
   ];
 
   @override
@@ -157,4 +154,3 @@ class _CreateContentScreenState extends State<CreateContentScreen>
     );
   }
 }
-

@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:onsetway_services/constitem/const_colors.dart';
 import 'package:onsetway_services/helper/responsive_ui.dart';
@@ -17,8 +16,7 @@ class AiScreen extends StatefulWidget {
   State<AiScreen> createState() => _AiScreenState();
 }
 
-class _AiScreenState extends State<AiScreen>
-    with TickerProviderStateMixin {
+class _AiScreenState extends State<AiScreen> with TickerProviderStateMixin {
   final PageController _pageController = PageController(viewportFraction: 0.88);
   int currentPage = 0;
   late AnimationController _headerController;
@@ -51,7 +49,6 @@ class _AiScreenState extends State<AiScreen>
         "Gain Competitive Advantage",
       ],
 
-
       icon: Icons.smart_toy_outlined,
       image: "assets/core/AI3.webp",
       accentColor: Colors.green,
@@ -65,13 +62,13 @@ class _AiScreenState extends State<AiScreen>
         "Security First",
         "Tailored Solutions",
         "End-to-End Technology Services",
-        "Dedicated Support"
+        "Dedicated Support",
       ],
-      icon: Icons.verified_outlined, 
+      icon: Icons.verified_outlined,
       image: "assets/picture/about us.webp",
       accentColor: Colors.purple,
-    ),];
-
+    ),
+  ];
 
   @override
   void initState() {

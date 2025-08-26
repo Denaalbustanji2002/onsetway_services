@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:onsetway_services/constitem/const_colors.dart';
 import 'package:onsetway_services/helper/responsive_ui.dart';
@@ -14,10 +13,12 @@ class DigitalMarketingAdvertisingScreen extends StatefulWidget {
   const DigitalMarketingAdvertisingScreen({super.key});
 
   @override
-  State<DigitalMarketingAdvertisingScreen> createState() => _DigitalMarketingAdvertisingScreenState();
+  State<DigitalMarketingAdvertisingScreen> createState() =>
+      _DigitalMarketingAdvertisingScreenState();
 }
 
-class _DigitalMarketingAdvertisingScreenState extends State<DigitalMarketingAdvertisingScreen>
+class _DigitalMarketingAdvertisingScreenState
+    extends State<DigitalMarketingAdvertisingScreen>
     with TickerProviderStateMixin {
   final PageController _pageController = PageController(viewportFraction: 0.88);
   int currentPage = 0;
@@ -43,7 +44,8 @@ class _DigitalMarketingAdvertisingScreenState extends State<DigitalMarketingAdve
 
     FeatureCardModel(
       title: "Why Choose Us?",
-      description: "Professional management that builds engagement and grows your presence",
+      description:
+          "Professional management that builds engagement and grows your presence",
       bulletPoints: [
         "Grow a real and engaged follower base",
         "Build strong customer relationships",
@@ -54,7 +56,6 @@ class _DigitalMarketingAdvertisingScreenState extends State<DigitalMarketingAdve
       image: "assets/picture/about us.webp",
       accentColor: Colors.green,
     ),
-
   ];
 
   @override
@@ -114,7 +115,7 @@ class _DigitalMarketingAdvertisingScreenState extends State<DigitalMarketingAdve
     double scale(double value) => value * androidScaleFactor;
 
     return OWPScaffold(
-      title: 'Digital Marketing & Advertising',
+      title: 'Digital Marketing',
       body: Column(
         children: [
           SlideTransition(
@@ -157,4 +158,3 @@ class _DigitalMarketingAdvertisingScreenState extends State<DigitalMarketingAdve
     );
   }
 }
-

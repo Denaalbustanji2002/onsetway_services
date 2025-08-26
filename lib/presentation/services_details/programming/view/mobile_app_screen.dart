@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:onsetway_services/constitem/const_colors.dart';
 import 'package:onsetway_services/helper/responsive_ui.dart';
@@ -51,7 +50,6 @@ class _MobileAppScreenState extends State<MobileAppScreen>
         "Secure: Bank-level encryption ",
         "Hardware Integration ",
         "Dashboard: Fully customizable ",
-
       ],
       icon: Icons.mobile_friendly, // updated to a mobile-related icon
       image: "assets/programming/mobile app/mobile6.webp",

@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, TargetPlatform;
+import 'package:onsetway_services/presentation/settings/view/privacy_policy_screen.dart';
+import 'package:onsetway_services/presentation/settings/view/terms_Conditions.dart';
 
 class OWScaffold extends StatelessWidget {
   final String title;
@@ -263,13 +265,27 @@ class _OWDrawer extends StatelessWidget {
                 _tile(
                   icon: Icons.privacy_tip_outlined,
                   label: 'Privacy Policy',
-                  onTap: () {},
+                  onTap: () {
+                    // التنقل إلى شاشة سياسة الخصوصية
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const PrivacyPolicyScreen(),
+                      ),
+                    );
+                  },
                   factor: factor,
                 ),
                 _tile(
                   icon: Icons.description_outlined,
                   label: 'Terms & Condition',
-                  onTap: () {},
+                  onTap: () {
+                    // التنقل إلى شاشة الشروط والأحكام
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const TermsConditions(),
+                      ),
+                    );
+                  },
                   factor: factor,
                 ),
                 _tile(

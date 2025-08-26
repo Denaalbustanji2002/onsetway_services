@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:onsetway_services/constitem/const_colors.dart';
 import 'package:onsetway_services/helper/responsive_ui.dart';
@@ -36,7 +35,6 @@ class _DesktopAppScreenState extends State<DesktopAppScreen>
         "HR, Payroll & Finance",
         "Educational Institutions",
         "Warehousing, Stock & Logistics",
-
       ],
       icon: Icons.store_outlined,
       image: "assets/programming/desktop/desktop3.webp",
@@ -56,7 +54,6 @@ class _DesktopAppScreenState extends State<DesktopAppScreen>
       image: "assets/programming/desktop/desktop4.webp",
       accentColor: Colors.green,
     ),
-
 
     FeatureCardModel(
       title: "Why Choose Onset Way?",

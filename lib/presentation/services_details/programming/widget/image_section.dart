@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use, unnecessary_import, use_key_in_widget_constructors
+
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -44,15 +46,13 @@ class ImageSection extends BaseCardWidget {
             ),
             child: Stack(
               children: [
-                Image(
-                  image: ResizeImage(
-                    AssetImage(feature.image),
-                    width: 300,  // حجم افتراضي مناسب للكرت
-                    height: 200, // نفس ارتفاع الكرت تقريبًا
-                  ),
+                Image.asset(
+                  feature.image,
                   fit: BoxFit.cover,
                   width: double.infinity,
                   height: double.infinity,
+                  cacheWidth: (MediaQuery.of(context).size.width * 2).toInt(),
+                  cacheHeight: (200 * 2).toInt(),
                 ),
 
                 Container(

@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:onsetway_services/constitem/const_colors.dart';
 import 'package:onsetway_services/helper/responsive_ui.dart';
@@ -27,51 +26,51 @@ class _MaintenanceScreenState extends State<MaintenanceScreen>
   late Animation<Offset> _headerSlideAnimation;
 
   final List<FeatureCardModel> features = [
-  FeatureCardModel(
-  title: "Why Maintenance Matters ?",
-  description: "Boost efficiency and growth with AI",
-  bulletPoints: [
-  "Prevents downtime and unexpected breakdowns",
-  "Improves speed, stability, and security",
-  "Reduces IT issues and overall costs",
-  "Keeps systems optimized for business performance",
-  ],
-  icon: Icons.build_outlined,
-  image: "assets/core/mainten1.webp",
-  accentColor: Colors.blue,
-  ),
+    FeatureCardModel(
+      title: "Why Maintenance Matters ?",
+      description: "Boost efficiency and growth with AI",
+      bulletPoints: [
+        "Prevents downtime and unexpected breakdowns",
+        "Improves speed, stability, and security",
+        "Reduces IT issues and overall costs",
+        "Keeps systems optimized for business performance",
+      ],
+      icon: Icons.build_outlined,
+      image: "assets/core/mainten1.webp",
+      accentColor: Colors.blue,
+    ),
 
-  FeatureCardModel(
-  title: "Our Maintenance Covers :",
-  description: "Enterprise-grade defense against threats",
-  bulletPoints: [
-  "Systems & Software",
-  "Security Updates & Backups",
-  "Networks & Connectivity",
-  "Websites & Hosting",
-  "On-demand Troubleshooting"
-  ],
-  icon: Icons.security_outlined,
-  image: "assets/core/maintan2.webp",
-  accentColor: Colors.green,
-  ),
+    FeatureCardModel(
+      title: "Our Maintenance Covers :",
+      description: "Enterprise-grade defense against threats",
+      bulletPoints: [
+        "Systems & Software",
+        "Security Updates & Backups",
+        "Networks & Connectivity",
+        "Websites & Hosting",
+        "On-demand Troubleshooting",
+      ],
+      icon: Icons.security_outlined,
+      image: "assets/core/maintan2.webp",
+      accentColor: Colors.green,
+    ),
 
-  FeatureCardModel(
-  title: "Why Choose Onset Way?",
-  description: "Your trusted security partner",
-  bulletPoints: [
-  "Proactive Maintenance",
-  "Fast Response Times",
-  "Expert Team",
-  "We Understand Your Business",
-  "End to End Coverage",
-  "Security First"
-  ],
-  icon: Icons.handshake_outlined,
-  image: "assets/picture/about us.webp",
-  accentColor: Colors.purple,
-  ),];
-
+    FeatureCardModel(
+      title: "Why Choose Onset Way?",
+      description: "Your trusted security partner",
+      bulletPoints: [
+        "Proactive Maintenance",
+        "Fast Response Times",
+        "Expert Team",
+        "We Understand Your Business",
+        "End to End Coverage",
+        "Security First",
+      ],
+      icon: Icons.handshake_outlined,
+      image: "assets/picture/about us.webp",
+      accentColor: Colors.purple,
+    ),
+  ];
 
   @override
   void initState() {

@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_import
+
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
@@ -35,8 +37,6 @@ class _CctvSystemScreenState extends State<CctvSystemScreen>
         "Wireless → Flexible, easy, wireless",
         "Wire-Free  → Battery, clean, wireless",
         "Hybrid  → Stable, flexible, combined",
-
-
       ],
       icon: Icons.store_outlined,
       image: "assets/hardware/cctv/cctv3.webp",
@@ -46,15 +46,12 @@ class _CctvSystemScreenState extends State<CctvSystemScreen>
       title: "Smart Home Solutions by Onset Way",
       description: "Cutting-edge technology with enterprise-grade capabilities",
       bulletPoints: [
-
         "Control Your Home. Wherever You Are. At Onset Way, we bring the future of living into your hands. Our Smart Home systems are designed to make your home more secure, efficient, and convenient — all with the tap of a button or a simple voice command.",
-
       ],
       icon: Icons.desktop_windows_outlined, // updated to a web-related icon
       image: "assets/hardware/cctv/cctv6.webp",
       accentColor: Colors.green,
     ),
-
 
     FeatureCardModel(
       title: "Control Everything From One App ,What We Offer?",
@@ -64,7 +61,6 @@ class _CctvSystemScreenState extends State<CctvSystemScreen>
         "Smart Lighting",
         "Climate Control",
         "Appliance Automation",
-
       ],
       icon: Icons.verified_outlined,
       image: "assets/hardware/cctv/cctv8.jpg",

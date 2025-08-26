@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:onsetway_services/constitem/const_colors.dart';
 import 'package:onsetway_services/helper/responsive_ui.dart';
@@ -14,7 +13,8 @@ class EstablishAndRebuildScreen extends StatefulWidget {
   const EstablishAndRebuildScreen({super.key});
 
   @override
-  State<EstablishAndRebuildScreen> createState() => _EstablishAndRebuildScreenState();
+  State<EstablishAndRebuildScreen> createState() =>
+      _EstablishAndRebuildScreenState();
 }
 
 class _EstablishAndRebuildScreenState extends State<EstablishAndRebuildScreen>
@@ -29,12 +29,12 @@ class _EstablishAndRebuildScreenState extends State<EstablishAndRebuildScreen>
   final List<FeatureCardModel> features = [
     FeatureCardModel(
       title: "Why Your Business Needs Established & Rebuilt?",
-      description: "Transform outdated systems into modern, efficient foundations",
+      description:
+          "Transform outdated systems into modern, efficient foundations",
       bulletPoints: [
         "Prevent failures and downtime with modern infrastructure",
         "Increase operational efficiency by up to 40%",
         "Secure, scalable, and future-ready systems",
-
       ],
       icon: Icons.build_circle_outlined, // رمز البناء والتجديد
       image: "assets/core/estab1.webp",
@@ -43,7 +43,8 @@ class _EstablishAndRebuildScreenState extends State<EstablishAndRebuildScreen>
 
     FeatureCardModel(
       title: "Established & Rebuilt by Onset Way",
-      description: "Modern solutions for businesses starting fresh or upgrading",
+      description:
+          "Modern solutions for businesses starting fresh or upgrading",
       bulletPoints: [
         "Transform or rebuild outdated systems",
         "Create secure, scalable, and efficient tech foundations",
@@ -67,9 +68,7 @@ class _EstablishAndRebuildScreenState extends State<EstablishAndRebuildScreen>
       image: "assets/picture/about us.webp",
       accentColor: Colors.purple,
     ),
-
   ];
-
 
   @override
   void initState() {

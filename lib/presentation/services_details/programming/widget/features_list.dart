@@ -1,8 +1,8 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:io';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:onsetway_services/constitem/const_colors.dart';
-import 'package:onsetway_services/presentation/services_details/programming/widget/base_card.dart';
 
 class FeatureList extends StatefulWidget {
   const FeatureList({

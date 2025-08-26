@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:onsetway_services/constitem/const_colors.dart';
 import 'package:onsetway_services/helper/responsive_ui.dart';
@@ -43,7 +42,8 @@ class _SocialMediaScreenState extends State<SocialMediaScreen>
 
     FeatureCardModel(
       title: "Why Choose Us?",
-      description: "Professional management that builds engagement and grows your presence",
+      description:
+          "Professional management that builds engagement and grows your presence",
       bulletPoints: [
         "Grow a real and engaged follower base",
         "Build strong customer relationships",
@@ -54,8 +54,6 @@ class _SocialMediaScreenState extends State<SocialMediaScreen>
       image: "assets/picture/about us.webp",
       accentColor: Colors.green,
     ),
-
-
   ];
 
   @override
@@ -158,4 +156,3 @@ class _SocialMediaScreenState extends State<SocialMediaScreen>
     );
   }
 }
-

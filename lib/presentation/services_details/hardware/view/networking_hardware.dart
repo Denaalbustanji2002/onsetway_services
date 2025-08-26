@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:onsetway_services/constitem/const_colors.dart';
 import 'package:onsetway_services/helper/responsive_ui.dart';
@@ -14,7 +13,8 @@ class NetworkingHardwareScreen extends StatefulWidget {
   const NetworkingHardwareScreen({super.key});
 
   @override
-  State<NetworkingHardwareScreen> createState() => _NetworkingHardwareScreenState();
+  State<NetworkingHardwareScreen> createState() =>
+      _NetworkingHardwareScreenState();
 }
 
 class _NetworkingHardwareScreenState extends State<NetworkingHardwareScreen>
@@ -56,7 +56,6 @@ class _NetworkingHardwareScreenState extends State<NetworkingHardwareScreen>
       accentColor: Colors.green,
     ),
 
-
     FeatureCardModel(
       title: "Why Choose Onset Way?",
       description: "Trusted partner with proven track record of excellence",
@@ -65,7 +64,6 @@ class _NetworkingHardwareScreenState extends State<NetworkingHardwareScreen>
         "PC Supply & Delivery",
         "Upgrades & Customizations",
         "Setup & After-Sale Support",
-
       ],
       icon: Icons.verified_outlined,
       image: "assets/picture/about us.webp",

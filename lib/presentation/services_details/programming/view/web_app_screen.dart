@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:onsetway_services/constitem/const_colors.dart';
 import 'package:onsetway_services/helper/responsive_ui.dart';
@@ -56,7 +55,6 @@ class _WebAppScreenState extends State<WebAppScreen>
       image: "assets/programming/web/web4.webp",
       accentColor: Colors.green,
     ),
-
 
     FeatureCardModel(
       title: "Why Choose Onset Way?",

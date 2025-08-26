@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use, unused_field
+
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:onsetway_services/constitem/const_colors.dart';

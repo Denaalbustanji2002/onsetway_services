@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:onsetway_services/constitem/const_colors.dart';
 import 'package:onsetway_services/helper/responsive_ui.dart';
@@ -27,45 +26,44 @@ class _CyberSecurityScreenState extends State<CyberSecurityScreen>
   late Animation<Offset> _headerSlideAnimation;
 
   final List<FeatureCardModel> features = [
-  FeatureCardModel(
-  title: "Why Your Business Needs Cyber Security?",
-  description: "Essential protection for every business",
-  bulletPoints: [
-  "95% of attacks caused by human error",
-  "Stricter data protection laws (GDPR & local)",
-  "60% of SMBs close after cyber incidents",
-
-  ],
-  icon: Icons.warning_amber_outlined, // أنسب للتحذير من المخاطر
-  image: "assets/core/cyber1.webp",
-  accentColor: Colors.blue,
-  ),
-  FeatureCardModel(
-  title: "Cyber Security by Onset Way",
-  description: "Enterprise-grade defense against threats",
-  bulletPoints: [
-  "Cyber threats are inevitable",
-  "Ransomware, phishing & insider risks",
-  "One breach = huge cost & downtime",
-  ],
-  icon: Icons.shield_outlined, // أنسب للحماية والدفاع
-  image: "assets/core/cyber2.webp",
-  accentColor: Colors.green,
-  ),
-  FeatureCardModel(
-  title: "Why Choose Onset Way?",
-  description: "Your trusted security partner",
-  bulletPoints: [
-  "Threat Detection & Prevention",
-  "Penetration Testing & Vulnerability Assessment",
-  "Network & Endpoint Protection",
-  "Email Security & Anti-Phishing",
-  ],
-  icon: Icons.verified_outlined, // ممتاز للثقة والاعتمادية
-  image: "assets/picture/about us.webp",
-  accentColor: Colors.purple,
-  ),];
-
+    FeatureCardModel(
+      title: "Why Your Business Needs Cyber Security?",
+      description: "Essential protection for every business",
+      bulletPoints: [
+        "95% of attacks caused by human error",
+        "Stricter data protection laws (GDPR & local)",
+        "60% of SMBs close after cyber incidents",
+      ],
+      icon: Icons.warning_amber_outlined, // أنسب للتحذير من المخاطر
+      image: "assets/core/cyber1.webp",
+      accentColor: Colors.blue,
+    ),
+    FeatureCardModel(
+      title: "Cyber Security by Onset Way",
+      description: "Enterprise-grade defense against threats",
+      bulletPoints: [
+        "Cyber threats are inevitable",
+        "Ransomware, phishing & insider risks",
+        "One breach = huge cost & downtime",
+      ],
+      icon: Icons.shield_outlined, // أنسب للحماية والدفاع
+      image: "assets/core/cyber2.webp",
+      accentColor: Colors.green,
+    ),
+    FeatureCardModel(
+      title: "Why Choose Onset Way?",
+      description: "Your trusted security partner",
+      bulletPoints: [
+        "Threat Detection & Prevention",
+        "Penetration Testing & Vulnerability Assessment",
+        "Network & Endpoint Protection",
+        "Email Security & Anti-Phishing",
+      ],
+      icon: Icons.verified_outlined, // ممتاز للثقة والاعتمادية
+      image: "assets/picture/about us.webp",
+      accentColor: Colors.purple,
+    ),
+  ];
 
   @override
   void initState() {

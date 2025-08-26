@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:onsetway_services/constitem/const_colors.dart';
 import 'package:onsetway_services/helper/responsive_ui.dart';
@@ -17,8 +16,7 @@ class SeoScreen extends StatefulWidget {
   State<SeoScreen> createState() => _SeoScreenState();
 }
 
-class _SeoScreenState extends State<SeoScreen>
-    with TickerProviderStateMixin {
+class _SeoScreenState extends State<SeoScreen> with TickerProviderStateMixin {
   final PageController _pageController = PageController(viewportFraction: 0.88);
   int currentPage = 0;
   late AnimationController _headerController;
@@ -29,7 +27,8 @@ class _SeoScreenState extends State<SeoScreen>
   final List<FeatureCardModel> features = [
     FeatureCardModel(
       title: "SEO Solutions That Drive Results",
-      description: "Boost visibility, attract qualified visitors, and convert them into customers",
+      description:
+          "Boost visibility, attract qualified visitors, and convert them into customers",
       bulletPoints: [
         "Conduct targeted keyword research",
         "Optimize on-page elements for search engines",
@@ -43,7 +42,8 @@ class _SeoScreenState extends State<SeoScreen>
 
     FeatureCardModel(
       title: "Why Choose Our SEO?",
-      description: "Professional strategies that grow organic traffic and visibility",
+      description:
+          "Professional strategies that grow organic traffic and visibility",
       bulletPoints: [
         "Attract more targeted website visitors",
         "Enhance online credibility and trust",
@@ -54,9 +54,6 @@ class _SeoScreenState extends State<SeoScreen>
       image: "assets/picture/about us.webp",
       accentColor: Colors.green,
     ),
-
-
-
   ];
 
   @override
@@ -159,4 +156,3 @@ class _SeoScreenState extends State<SeoScreen>
     );
   }
 }
-
