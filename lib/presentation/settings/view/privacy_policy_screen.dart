@@ -81,7 +81,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
             child: Stack(
               alignment: Alignment.center,
               children: [
-                Icon(Icons.balance, size: 45, color: ConstColor.black),
+                Icon(Icons.privacy_tip_outlined, size: 45, color: ConstColor.black),
                 Positioned(
                   bottom: 8,
                   child: Container(

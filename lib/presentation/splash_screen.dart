@@ -1,13 +1,10 @@
-// ignore_for_file: deprecated_member_use, library_prefixes
-
-import 'dart:io';
-import 'dart:ui';
 import 'dart:async';
 import 'dart:math' as math;
+import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:video_player/video_player.dart';
 
-import '../main.dart';
 import 'home/widget/main_screen_nav.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -20,206 +17,303 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen>
     with TickerProviderStateMixin {
   late VideoPlayerController _videoController;
-  late AnimationController _textCtrl;
-  late AnimationController _layoutCtrl;
-  late AnimationController _bgCtrl;
-  late AnimationController _pulseCtrl;
+  late AnimationController _textAnimationController;
+  late AnimationController _layoutAnimationController;
+  late AnimationController _progressAnimationController;
 
-  late Animation<double> _textFade;
-  late Animation<double> _textScale;
-  late Animation<Offset> _textSlide;
-  late Animation<double> _videoFade;
-  late Animation<double> _bgAnim;
-  late Animation<double> _pulse;
+  late Animation<double> _textFadeAnimation;
+  late Animation<double> _textScaleAnimation;
+  late Animation<Offset> _textSlideAnimation;
+
+  late Animation<double> _videoFadeAnimation;
+  late Animation<double> _videoScaleAnimation;
+
+  late Animation<double> _progressAnimation;
 
   bool _showVideo = false;
   bool _navigating = false;
   Timer? _navigationTimer;
 
-  // Palette
-  static const Color black = Color(0xFF000000);
-  static const Color darkGold = Color(0xFFcd9733);
-  static const Color gold = Color(0xFFb8964c);
-  static const Color white = Color(0xFFFFFFFF);
-
   @override
   void initState() {
     super.initState();
 
-    _initializeControllers();
-    _initializeVideo();
-  }
-
-  void _initializeControllers() {
-    _textCtrl = AnimationController(
-      duration: const Duration(milliseconds: 1100),
+    _textAnimationController = AnimationController(
+      duration: const Duration(milliseconds: 1800),
       vsync: this,
     );
 
-    _layoutCtrl = AnimationController(
-      duration: const Duration(milliseconds: 1100),
+    _layoutAnimationController = AnimationController(
+      duration: const Duration(milliseconds: 1200),
       vsync: this,
     );
 
-    _bgCtrl = AnimationController(
-      duration: const Duration(milliseconds: 4200),
+    _progressAnimationController = AnimationController(
+      duration: const Duration(milliseconds: 4000),
       vsync: this,
-    )..repeat();
+    );
 
-    _pulseCtrl = AnimationController(
-      duration: const Duration(milliseconds: 1600),
-      vsync: this,
-    )..repeat(reverse: true);
+    _textFadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _textAnimationController,
+        curve: const Interval(0.0, 0.7, curve: Curves.easeOutCubic),
+      ),
+    );
 
-    _textFade = CurvedAnimation(parent: _textCtrl, curve: Curves.easeOut);
+    _textScaleAnimation = Tween<double>(begin: 0.3, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _textAnimationController,
+        curve: const Interval(0.0, 0.9, curve: Curves.elasticOut),
+      ),
+    );
 
-    _textScale = Tween<double>(
-      begin: 0.9,
-      end: 1.0,
-    ).animate(CurvedAnimation(parent: _textCtrl, curve: Curves.easeOutCubic));
+    _textSlideAnimation =
+        Tween<Offset>(begin: Offset.zero, end: const Offset(0.0, -0.4)).animate(
+          CurvedAnimation(
+            parent: _layoutAnimationController,
+            curve: Curves.easeInOutCubic,
+          ),
+        );
 
-    _textSlide = Tween<Offset>(
-      begin: const Offset(0.0, 0.18),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(parent: _layoutCtrl, curve: Curves.easeOutCubic));
+    _videoFadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _layoutAnimationController,
+        curve: const Interval(0.4, 1.0, curve: Curves.easeOutCubic),
+      ),
+    );
 
-    _videoFade = CurvedAnimation(parent: _layoutCtrl, curve: Curves.easeIn);
+    _videoScaleAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _layoutAnimationController,
+        curve: const Interval(0.4, 1.0, curve: Curves.elasticOut),
+      ),
+    );
 
-    _bgAnim = Tween<double>(begin: 0, end: 1).animate(_bgCtrl);
-    _pulse = Tween<double>(
-      begin: 0.985,
-      end: 1.025,
-    ).animate(CurvedAnimation(parent: _pulseCtrl, curve: Curves.easeInOut));
-  }
+    _progressAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _progressAnimationController,
+        curve: Curves.easeInOut,
+      ),
+    );
 
-  void _initializeVideo() {
     _videoController = VideoPlayerController.asset('assets/video/ow3.mp4')
-      ..initialize()
-          .then((_) {
-            if (mounted) setState(() {});
-            _startAnimations();
-          })
-          .catchError((error) {
-            if (mounted) _startAnimations();
-          });
+      ..initialize().then((_) {
+        if (mounted) setState(() {});
+      });
+
+    _videoController.setLooping(false);
+    _videoController.setVolume(0.0);
+
+    _startAnimationSequence();
   }
 
-  void _startAnimations() {
-    _textCtrl.forward();
+  void _startAnimationSequence() async {
+    _textAnimationController.forward();
+    _progressAnimationController.forward();
 
-    // Start fallback navigation timer
-    _navigationTimer = Timer(const Duration(seconds: 5), _goNext);
+    await Future.delayed(const Duration(milliseconds: 2200));
+    if (!mounted) return;
+
+    setState(() {
+      _showVideo = true;
+    });
+
+    _layoutAnimationController.forward();
 
     if (_videoController.value.isInitialized) {
-      setState(() => _showVideo = true);
-      _layoutCtrl.forward();
-      _videoController
-        ..setLooping(false)
-        ..setVolume(0.0)
-        ..play();
-
-      // Add video completion listener
-      _videoController.addListener(_checkVideoCompletion);
-    } else {
-      // If video fails, proceed with animations
-      _layoutCtrl.forward();
+      _videoController.play();
     }
+
+    await Future.delayed(const Duration(milliseconds: 3200));
+    if (!mounted) return;
+
+    _navigateToNextScreen();
   }
 
-  void _checkVideoCompletion() {
-    if (_videoController.value.isInitialized &&
-        _videoController.value.position >= _videoController.value.duration) {
-      _goNext();
-    }
-  }
-
-  void _goNext() {
+  void _navigateToNextScreen() {
     if (_navigating) return;
     _navigating = true;
 
-    // Clean up resources
-    _navigationTimer?.cancel();
-    _videoController.removeListener(_checkVideoCompletion);
-
-    navigatorKey.currentState?.pushReplacement(
+    Navigator.of(context).pushReplacement(
       PageRouteBuilder(
         pageBuilder: (_, __, ___) => const MainScreen(),
-        transitionDuration: const Duration(milliseconds: 600),
+        transitionDuration: const Duration(milliseconds: 800),
         transitionsBuilder: (_, animation, __, child) =>
-            FadeTransition(opacity: animation, child: child),
+            FadeTransition(
+              opacity: CurvedAnimation(
+                parent: animation,
+                curve: Curves.easeInOut,
+              ),
+              child: child,
+            ),
       ),
     );
   }
 
   @override
   void dispose() {
-    _textCtrl.dispose();
-    _layoutCtrl.dispose();
-    _bgCtrl.dispose();
-    _pulseCtrl.dispose();
+    _textAnimationController.dispose();
+    _layoutAnimationController.dispose();
+    _progressAnimationController.dispose();
     _navigationTimer?.cancel();
-    _videoController.removeListener(_checkVideoCompletion);
+    if (_videoController.value.isInitialized) {
+      _videoController.pause();
+    }
     _videoController.dispose();
     super.dispose();
+  }
+
+  Widget _buildVideoContainer() {
+    return AnimatedBuilder(
+      animation: Listenable.merge([_videoFadeAnimation, _videoScaleAnimation]),
+      builder: (context, child) {
+        return FadeTransition(
+          opacity: _videoFadeAnimation,
+          child: ScaleTransition(
+            scale: _videoScaleAnimation,
+            child: SizedBox(
+              width: 240,
+              height: 240,
+              child: ClipOval(
+                child: VideoPlayer(_videoController),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildProgressIndicator() {
+    return Positioned(
+      bottom: 80,
+      left: 0,
+      right: 0,
+      child: AnimatedBuilder(
+        animation: _progressAnimation,
+        builder: (context, child) {
+          return Center(
+            child: Column(
+              children: [
+                Container(
+                  width: 200,
+                  height: 3,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(2),
+                    color: Colors.white.withOpacity(0.1),
+                  ),
+                  child: FractionallySizedBox(
+                    alignment: Alignment.centerLeft,
+                    widthFactor: _progressAnimation.value,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(2),
+                        gradient: const LinearGradient(
+                          colors: [
+                            Color(0xFFcd9733),
+                            Color(0xFFb8964c),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Loading...',
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(0.7),
+                    fontSize: 12,
+                    fontWeight: FontWeight.w300,
+                    letterSpacing: 1.2,
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: black,
       body: Stack(
         children: [
-          // Background animation
-          Positioned.fill(
-            child: AnimatedBuilder(
-              animation: Listenable.merge([_bgAnim, _pulse]),
-              builder: (_, __) => CustomPaint(
-                painter: _PlayfulOrbitsPainter(_bgAnim.value, _pulse.value),
+          const Positioned.fill(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: RadialGradient(
+                  center: Alignment.center,
+                  radius: 1.2,
+                  colors: [
+                    Color(0xFF0a0a0a),
+                    Colors.black,
+                  ],
+                ),
               ),
             ),
           ),
 
-          // Blur overlay
-          Positioned.fill(
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
-              child: Container(color: Colors.black.withOpacity(0.12)),
-            ),
-          ),
-
-          // Center content
           AnimatedBuilder(
-            animation: Listenable.merge([_textCtrl, _layoutCtrl, _pulseCtrl]),
-            builder: (context, _) => Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Video player
-                  // Video player (بدون أي Opacity على الفيديو نفسه)
-                  if (_showVideo && _videoController.value.isInitialized)
-                    Transform.scale(
-                      scale: _pulse.value,
-                      child: SizedBox(
-                        width: Platform.isAndroid ? 212 : 220,
-                        height: Platform.isAndroid ? 212 : 220,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(16),
-                          child: Stack(
-                            fit: StackFit.expand,
-                            children: [
-                              // عزل رسم الفيديو عن أي تأثير توريث شفافية
-                              const RepaintBoundary(
-                                child:
-                                    SizedBox.expand(), // placeholder سيتم استبداله بالسطر التالي
-                              ),
-                              RepaintBoundary(
-                                child: VideoPlayer(_videoController),
-                              ),
+            animation: Listenable.merge([
+              _textAnimationController,
+              _layoutAnimationController,
+            ]),
+            builder: (context, child) {
+              return Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (_showVideo && _videoController.value.isInitialized)
+                      _buildVideoContainer(),
 
-                              IgnorePointer(
-                                child: FadeTransition(
-                                  opacity: ReverseAnimation(_videoFade),
-                                  child: const ColoredBox(color: Colors.black),
+                    if (_showVideo) const SizedBox(height: 70),
+
+                    SlideTransition(
+                      position: _textSlideAnimation,
+                      child: FadeTransition(
+                        opacity: _textFadeAnimation,
+                        child: ScaleTransition(
+                          scale: _textScaleAnimation,
+                          child: Column(
+                            children: [
+                              ShaderMask(
+                                shaderCallback: (bounds) {
+                                  const LinearGradient textGradient =
+                                  LinearGradient(
+                                    colors: [
+                                      Color(0xFFcd9733),
+                                      Color(0xFFb8964c),
+                                      Colors.white,
+                                      Color(0xFFb8964c),
+                                    ],
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                    stops: [0.0, 0.3, 0.7, 1.0],
+                                  );
+                                  return textGradient.createShader(bounds);
+                                },
+                                child: const Text(
+                                  'OnsetWay',
+                                  style: TextStyle(
+                                    fontFamily: 'MAIAN',
+                                    fontSize: 48,
+                                    fontWeight: FontWeight.w300,
+                                    color: Colors.white,
+                                    letterSpacing: 2.0,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                'Premium Experience',
+                                style: TextStyle(
+                                  color: Colors.white.withOpacity(0.6),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w300,
+                                  letterSpacing: 3.0,
                                 ),
                               ),
                             ],
@@ -227,155 +321,15 @@ class _SplashScreenState extends State<SplashScreen>
                         ),
                       ),
                     ),
-
-                  // Brand name with spacing
-                  FadeTransition(
-                    opacity: _textFade,
-                    child: SlideTransition(
-                      position: _textSlide,
-                      child: ScaleTransition(
-                        scale: _textScale,
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 40),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 18,
-                              vertical: 10,
-                            ),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-                              color: Colors.white.withOpacity(0.06),
-                            ),
-                            child: ShaderMask(
-                              shaderCallback: (rect) => const LinearGradient(
-                                colors: [darkGold, gold, white],
-                                begin: Alignment.centerLeft,
-                                end: Alignment.centerRight,
-                              ).createShader(rect),
-                              child: Text(
-                                'OnsetWay',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontFamily: 'MAIAN',
-                                  fontSize: Platform.isAndroid ? 40 - 8.0 : 40,
-                                  fontWeight: FontWeight.w700,
-                                  letterSpacing: 2.0,
-                                  color: white,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+                  ],
+                ),
+              );
+            },
           ),
+
+          _buildProgressIndicator(),
         ],
       ),
     );
   }
-}
-
-class _PlayfulOrbitsPainter extends CustomPainter {
-  final double t;
-  final double pulse;
-
-  const _PlayfulOrbitsPainter(this.t, this.pulse);
-
-  static const Color darkGold = Color(0xFFcd9733);
-  static const Color gold = Color(0xFFb8964c);
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final cx = size.width / 2;
-    final cy = size.height / 2;
-
-    for (int i = 1; i <= 5; i++) {
-      final r = (54.0 * i) + (20 * math.sin((t + i * 0.07) * math.pi * 2));
-      final dashCount = 36 + i * 4;
-      final angleOffset = t * math.pi * 2 * (i.isOdd ? 1 : -1);
-
-      final p = Paint()
-        ..color = darkGold.withOpacity(0.12)
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 1.4;
-
-      for (int d = 0; d < dashCount; d++) {
-        final a1 = angleOffset + (d / dashCount) * math.pi * 2;
-        final a2 = a1 + (math.pi * 2 / dashCount) * 0.5;
-        final p1 = Offset(cx + r * math.cos(a1), cy + r * math.sin(a1));
-        final p2 = Offset(cx + r * math.cos(a2), cy + r * math.sin(a2));
-        canvas.drawLine(p1, p2, p);
-      }
-    }
-
-    final ribbon = Paint()
-      ..color = gold.withOpacity(0.10)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.2;
-
-    final path = Path();
-    final ampX = size.width * 0.28;
-    final ampY = size.height * 0.18;
-    const freqX = 3.0, freqY = 2.0;
-    for (int i = 0; i <= 320; i++) {
-      final tt = (i / 320) * math.pi * 2;
-      final x = cx + ampX * math.sin(freqX * tt + t * math.pi * 2);
-      final y = cy + ampY * math.sin(freqY * tt + t * math.pi * 2 * 0.9);
-      if (i == 0) {
-        path.moveTo(x, y);
-      } else {
-        path.lineTo(x, y);
-      }
-    }
-    canvas.drawPath(path, ribbon);
-
-    final comet = Paint()
-      ..shader = LinearGradient(
-        colors: [
-          Colors.transparent,
-          gold.withOpacity(0.08),
-          Colors.transparent,
-        ],
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-      ).createShader(Rect.fromLTWH(0, 0, size.width, size.height))
-      ..style = PaintingStyle.fill;
-
-    for (int i = 0; i < 3; i++) {
-      final off = ((t + i * 0.2) * size.width * 1.4) % (size.width * 1.4);
-      final x = -size.width + off + (i * size.width * 0.45);
-      final path = Path()
-        ..moveTo(x, -10)
-        ..quadraticBezierTo(
-          x + 70,
-          size.height * 0.25,
-          x + 130,
-          size.height + 10,
-        )
-        ..lineTo(x + 60, size.height + 10)
-        ..quadraticBezierTo(x - 10, size.height * 0.25, x - 40, -10)
-        ..close();
-      canvas.drawPath(path, comet);
-    }
-
-    final dot = Paint()
-      ..color = darkGold.withOpacity(0.18)
-      ..style = PaintingStyle.fill;
-
-    for (int i = 0; i < 22; i++) {
-      final ang = (t * 2 * math.pi * (1.0 + (i % 5) * 0.06)) + (i * 0.35);
-      final r = 80 + (i % 6) * 18 + 8 * math.sin(t * 4 + i);
-      final x = cx + r * math.cos(ang);
-      final y = cy + r * math.sin(ang);
-      final sz = 2.0 + (i % 3) * 0.6 + 0.6 * (0.5 + 0.5 * math.sin(t * 10 + i));
-      canvas.drawCircle(Offset(x, y), sz * pulse, dot);
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }
