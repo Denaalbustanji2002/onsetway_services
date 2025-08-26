@@ -172,8 +172,8 @@ class _SplashScreenState extends State<SplashScreen>
           child: ScaleTransition(
             scale: _videoScaleAnimation,
             child: SizedBox(
-              width: 240,
-              height: 240,
+              width: 220,
+              height: 220,
               child: ClipOval(
                 child: VideoPlayer(_videoController),
               ),
@@ -223,7 +223,7 @@ class _SplashScreenState extends State<SplashScreen>
                   'Loading...',
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.7),
-                    fontSize: 12,
+                    fontSize: 10,
                     fontWeight: FontWeight.w300,
                     letterSpacing: 1.2,
                   ),
@@ -269,7 +269,7 @@ class _SplashScreenState extends State<SplashScreen>
                     if (_showVideo && _videoController.value.isInitialized)
                       _buildVideoContainer(),
 
-                    if (_showVideo) const SizedBox(height: 70),
+                    if (_showVideo) const SizedBox(height: 80),
 
                     SlideTransition(
                       position: _textSlideAnimation,
@@ -299,7 +299,7 @@ class _SplashScreenState extends State<SplashScreen>
                                   'OnsetWay',
                                   style: TextStyle(
                                     fontFamily: 'MAIAN',
-                                    fontSize: 48,
+                                    fontSize: 40,
                                     fontWeight: FontWeight.w300,
                                     color: Colors.white,
                                     letterSpacing: 2.0,
