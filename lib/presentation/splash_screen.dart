@@ -1,6 +1,9 @@
+// ignore_for_file: unused_import, unnecessary_import, deprecated_member_use
+
 import 'dart:async';
 import 'dart:math' as math;
 import 'dart:ui';
+import 'package:flutter/foundation.dart'; // <--- إضافة للتحقق من النظام
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:video_player/video_player.dart';
@@ -34,9 +37,25 @@ class _SplashScreenState extends State<SplashScreen>
   bool _navigating = false;
   Timer? _navigationTimer;
 
+  late bool _isAndroid;
+  late double _logoFontSize;
+  late double _subtitleFontSize;
+  late double _videoSize;
+  late double _progressWidth;
+  late double _progressTextSize;
+
   @override
   void initState() {
     super.initState();
+
+    _isAndroid = defaultTargetPlatform == TargetPlatform.android;
+
+    // تقليل الأحجام لو Android
+    _logoFontSize = _isAndroid ? 32 : 40;
+    _subtitleFontSize = _isAndroid ? 12 : 14;
+    _videoSize = _isAndroid ? 180 : 220;
+    _progressWidth = _isAndroid ? 160 : 200;
+    _progressTextSize = _isAndroid ? 8 : 10;
 
     _textAnimationController = AnimationController(
       duration: const Duration(milliseconds: 1800),
@@ -138,14 +157,10 @@ class _SplashScreenState extends State<SplashScreen>
       PageRouteBuilder(
         pageBuilder: (_, __, ___) => const MainScreen(),
         transitionDuration: const Duration(milliseconds: 800),
-        transitionsBuilder: (_, animation, __, child) =>
-            FadeTransition(
-              opacity: CurvedAnimation(
-                parent: animation,
-                curve: Curves.easeInOut,
-              ),
-              child: child,
-            ),
+        transitionsBuilder: (_, animation, __, child) => FadeTransition(
+          opacity: CurvedAnimation(parent: animation, curve: Curves.easeInOut),
+          child: child,
+        ),
       ),
     );
   }
@@ -172,11 +187,9 @@ class _SplashScreenState extends State<SplashScreen>
           child: ScaleTransition(
             scale: _videoScaleAnimation,
             child: SizedBox(
-              width: 220,
-              height: 220,
-              child: ClipOval(
-                child: VideoPlayer(_videoController),
-              ),
+              width: _videoSize,
+              height: _videoSize,
+              child: ClipOval(child: VideoPlayer(_videoController)),
             ),
           ),
         );
@@ -196,7 +209,7 @@ class _SplashScreenState extends State<SplashScreen>
             child: Column(
               children: [
                 Container(
-                  width: 200,
+                  width: _progressWidth,
                   height: 3,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(2),
@@ -209,21 +222,18 @@ class _SplashScreenState extends State<SplashScreen>
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(2),
                         gradient: const LinearGradient(
-                          colors: [
-                            Color(0xFFcd9733),
-                            Color(0xFFb8964c),
-                          ],
+                          colors: [Color(0xFFcd9733), Color(0xFFb8964c)],
                         ),
                       ),
                     ),
                   ),
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: _isAndroid ? 12 : 16),
                 Text(
                   'Loading...',
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.7),
-                    fontSize: 10,
+                    fontSize: _progressTextSize,
                     fontWeight: FontWeight.w300,
                     letterSpacing: 1.2,
                   ),
@@ -247,10 +257,7 @@ class _SplashScreenState extends State<SplashScreen>
                 gradient: RadialGradient(
                   center: Alignment.center,
                   radius: 1.2,
-                  colors: [
-                    Color(0xFF0a0a0a),
-                    Colors.black,
-                  ],
+                  colors: [Color(0xFF0a0a0a), Colors.black],
                 ),
               ),
             ),
@@ -269,7 +276,7 @@ class _SplashScreenState extends State<SplashScreen>
                     if (_showVideo && _videoController.value.isInitialized)
                       _buildVideoContainer(),
 
-                    if (_showVideo) const SizedBox(height: 80),
+                    if (_showVideo) SizedBox(height: _isAndroid ? 60 : 80),
 
                     SlideTransition(
                       position: _textSlideAnimation,
@@ -282,36 +289,36 @@ class _SplashScreenState extends State<SplashScreen>
                               ShaderMask(
                                 shaderCallback: (bounds) {
                                   const LinearGradient textGradient =
-                                  LinearGradient(
-                                    colors: [
-                                      Color(0xFFcd9733),
-                                      Color(0xFFb8964c),
-                                      Colors.white,
-                                      Color(0xFFb8964c),
-                                    ],
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                    stops: [0.0, 0.3, 0.7, 1.0],
-                                  );
+                                      LinearGradient(
+                                        colors: [
+                                          Color(0xFFcd9733),
+                                          Color(0xFFb8964c),
+                                          Colors.white,
+                                          Color(0xFFb8964c),
+                                        ],
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                        stops: [0.0, 0.3, 0.7, 1.0],
+                                      );
                                   return textGradient.createShader(bounds);
                                 },
-                                child: const Text(
+                                child: Text(
                                   'OnsetWay',
                                   style: TextStyle(
                                     fontFamily: 'MAIAN',
-                                    fontSize: 40,
+                                    fontSize: _logoFontSize,
                                     fontWeight: FontWeight.w300,
                                     color: Colors.white,
                                     letterSpacing: 2.0,
                                   ),
                                 ),
                               ),
-                              const SizedBox(height: 8),
+                              SizedBox(height: _isAndroid ? 6 : 8),
                               Text(
                                 'Premium Experience',
                                 style: TextStyle(
                                   color: Colors.white.withOpacity(0.6),
-                                  fontSize: 14,
+                                  fontSize: _subtitleFontSize,
                                   fontWeight: FontWeight.w300,
                                   letterSpacing: 3.0,
                                 ),

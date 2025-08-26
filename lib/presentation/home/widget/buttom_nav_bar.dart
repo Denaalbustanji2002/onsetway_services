@@ -1,12 +1,9 @@
-import 'dart:ui';
-import 'package:flutter/material.dart';
+// ignore_for_file: deprecated_member_use
 
-class ConstColor {
-  static const Color black = Color(0xFF000000);
-  static const Color darkGold = Color(0xffb8892e);
-  static const Color gold = Color(0xFFb8964c);
-  static const Color white = Color(0xFFFFFFFF);
-}
+import 'dart:ui';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:onsetway_services/constitem/const_colors.dart';
 
 class TabItem {
   final IconData icon;
@@ -52,10 +49,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
     );
 
     _scaleAnimation = Tween<double>(begin: 1.0, end: 1.15).animate(
-      CurvedAnimation(
-        parent: _scaleController,
-        curve: Curves.elasticOut,
-      ),
+      CurvedAnimation(parent: _scaleController, curve: Curves.elasticOut),
     );
   }
 
@@ -67,21 +61,22 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
 
   @override
   Widget build(BuildContext context) {
-    final double margin = 20;
-    final double iconSize = 28;
-    final double fontSize = 13;
+    final bool isAndroid = defaultTargetPlatform == TargetPlatform.android;
+
+    final double margin = isAndroid ? 0 : 20;
+    final double iconSize = isAndroid ? 20 : 28;
+    final double fontSize = isAndroid ? 9 : 13;
 
     return Container(
       margin: EdgeInsets.symmetric(horizontal: margin, vertical: margin * 0.8),
       child: Stack(
         children: [
-          // Background with blur and shadow
           ClipRRect(
             borderRadius: BorderRadius.circular(32),
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
               child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 12),
+                padding: const EdgeInsets.symmetric(vertical: 8),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(32),
                   gradient: LinearGradient(
@@ -128,20 +123,24 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
                                     shape: BoxShape.circle,
                                     gradient: isSelected
                                         ? LinearGradient(
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight,
-                                      colors: [
-                                        ConstColor.gold.withOpacity(0.2),
-                                        ConstColor.darkGold.withOpacity(0.1),
-                                        Colors.transparent,
-                                      ],
-                                    )
+                                            begin: Alignment.topLeft,
+                                            end: Alignment.bottomRight,
+                                            colors: [
+                                              ConstColor.gold.withOpacity(0.2),
+                                              ConstColor.darkGold.withOpacity(
+                                                0.1,
+                                              ),
+                                              Colors.transparent,
+                                            ],
+                                          )
                                         : null,
                                     border: isSelected
                                         ? Border.all(
-                                      color: ConstColor.gold.withOpacity(0.4),
-                                      width: 1,
-                                    )
+                                            color: ConstColor.gold.withOpacity(
+                                              0.4,
+                                            ),
+                                            width: 1,
+                                          )
                                         : null,
                                   ),
                                   child: Icon(
@@ -152,13 +151,14 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
                                         : ConstColor.white.withOpacity(0.6),
                                   ),
                                 ),
-                                const SizedBox(height: 6),
+                                SizedBox(height: isAndroid ? 3 : 6),
                                 Text(
                                   item.title,
                                   style: TextStyle(
                                     fontSize: fontSize,
-                                    fontWeight:
-                                    isSelected ? FontWeight.w600 : FontWeight.w400,
+                                    fontWeight: isSelected
+                                        ? FontWeight.w600
+                                        : FontWeight.w400,
                                     color: isSelected
                                         ? ConstColor.gold
                                         : ConstColor.white.withOpacity(0.7),
@@ -179,11 +179,13 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
           // Glow indicator
           Positioned(
             top: 0,
-            left: (MediaQuery.of(context).size.width - (margin * 2)) /
+            left:
+                (MediaQuery.of(context).size.width - (margin * 2)) /
                 baseItems.length *
                 widget.selectedIndex,
             child: Container(
-              width: (MediaQuery.of(context).size.width - (margin * 2)) /
+              width:
+                  (MediaQuery.of(context).size.width - (margin * 2)) /
                   baseItems.length,
               height: 3,
               decoration: BoxDecoration(
