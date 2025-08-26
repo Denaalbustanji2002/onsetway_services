@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../appointment/view/appointment.dart';
+import '../../be_partner/view/be_partner_screen.dart';
 import '../../myoffer/view/myoffer.dart';
 import '../../settings_main/view/setting_nav.dart';
 import '../view/home_page.dart';
@@ -22,7 +23,7 @@ class _MainScreenState extends State<MainScreen> {
   void initState() {
     super.initState();
 
-    _pages = [HomePage(), MyOffer(), Appointment(), SettingNav()];
+    _pages = [HomePage(), MyOffer(), Appointment(), BePartnerScreen(), SettingNav()];
   }
 
   void _onItemTapped(int index) {
