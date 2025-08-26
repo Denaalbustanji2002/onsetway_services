@@ -36,7 +36,6 @@ class OWScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    // ⬇️ عامل التصغير على Android
     final bool isAndroid = defaultTargetPlatform == TargetPlatform.android;
     final double factor = isAndroid ? 0.8 : 1.0;
     double sf(double v) => v * factor;
@@ -51,14 +50,14 @@ class OWScaffold extends StatelessWidget {
           gradient: _barGradient,
           actions: actions,
           foreground: white,
-          factor: factor, // تمرير العامل للـ AppBar
+          factor: factor,
         ),
       ),
       drawer: _OWDrawer(
         logoAsset: logoAsset,
         gradient: _barGradient,
         isDark: isDark,
-        factor: factor, // تمرير العامل للـ Drawer
+        factor: factor,
       ),
       body: body,
     );
@@ -204,15 +203,13 @@ class _OWDrawerState extends State<_OWDrawer>
       ),
     );
 
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(-0.3, 0.0),
-      end: Offset.zero,
-    ).animate(
-      CurvedAnimation(
-        parent: _animationController,
-        curve: const Interval(0.2, 1.0, curve: Curves.easeOutCubic),
-      ),
-    );
+    _slideAnimation =
+        Tween<Offset>(begin: const Offset(-0.3, 0.0), end: Offset.zero).animate(
+          CurvedAnimation(
+            parent: _animationController,
+            curve: const Interval(0.2, 1.0, curve: Curves.easeOutCubic),
+          ),
+        );
 
     _animationController.forward();
   }
@@ -232,17 +229,13 @@ class _OWDrawerState extends State<_OWDrawer>
     double sf(double v) => v * widget.factor;
 
     return Drawer(
-      backgroundColor: const Color(0xFF0F0F0F), // Darker, more premium background
+      backgroundColor: const Color(0xFF0F0F0F),
       child: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFF1A1A1A),
-              Color(0xFF0F0F0F),
-              Color(0xFF000000),
-            ],
+            colors: [Color(0xFF1A1A1A), Color(0xFF0F0F0F), Color(0xFF000000)],
             stops: [0.0, 0.6, 1.0],
           ),
         ),
@@ -251,13 +244,16 @@ class _OWDrawerState extends State<_OWDrawer>
           builder: (context, child) {
             return FadeTransition(
               opacity: _fadeAnimation,
-              child: Column(
-                children: [
-                  _buildEnhancedHeader(sf, white, darkGold),
-                  _buildNavigationSection(sf),
-                  const Spacer(),
-                  _buildEnhancedLogoutSection(sf, white, gold, darkGold),
-                ],
+              child: SafeArea(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      _buildEnhancedHeader(sf, white, darkGold),
+                      _buildNavigationSection(sf),
+                      _buildEnhancedLogoutSection(sf, white, gold, darkGold),
+                    ],
+                  ),
+                ),
               ),
             );
           },
@@ -266,7 +262,11 @@ class _OWDrawerState extends State<_OWDrawer>
     );
   }
 
-  Widget _buildEnhancedHeader(double Function(double) sf, Color white, Color darkGold) {
+  Widget _buildEnhancedHeader(
+    double Function(double) sf,
+    Color white,
+    Color darkGold,
+  ) {
     return Container(
       height: sf(180),
       child: Stack(
@@ -421,17 +421,27 @@ class _OWDrawerState extends State<_OWDrawer>
 
   Widget _buildNavigationSection(double Function(double) sf) {
     final menuItems = [
-      {'icon': Icons.person_outline_rounded, 'label': 'Profile', 'onTap': () {}},
+      {
+        'icon': Icons.person_outline_rounded,
+        'label': 'Profile',
+        'onTap': () {},
+      },
       {'icon': Icons.settings_outlined, 'label': 'Settings', 'onTap': () {}},
-      {'icon': Icons.support_agent_outlined, 'label': 'Support', 'onTap': () {}},
+      {
+        'icon': Icons.support_agent_outlined,
+        'label': 'Support',
+        'onTap': () {},
+      },
       {
         'icon': Icons.privacy_tip_outlined,
         'label': 'Privacy Policy',
         'onTap': () {
           Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => const PrivacyPolicyScreen()),
+            MaterialPageRoute(
+              builder: (context) => const PrivacyPolicyScreen(),
+            ),
           );
-        }
+        },
       },
       {
         'icon': Icons.description_outlined,
@@ -440,7 +450,7 @@ class _OWDrawerState extends State<_OWDrawer>
           Navigator.of(context).push(
             MaterialPageRoute(builder: (context) => const TermsConditions()),
           );
-        }
+        },
       },
 
       {'icon': Icons.info_outline_rounded, 'label': 'About', 'onTap': () {}},
@@ -452,19 +462,20 @@ class _OWDrawerState extends State<_OWDrawer>
         children: [
           for (int index = 0; index < menuItems.length; index++)
             SlideTransition(
-              position: Tween<Offset>(
-                begin: const Offset(-0.5, 0),
-                end: Offset.zero,
-              ).animate(
-                CurvedAnimation(
-                  parent: _animationController,
-                  curve: Interval(
-                    0.3 + (index * 0.1),
-                    1.0,
-                    curve: Curves.easeOutCubic,
+              position:
+                  Tween<Offset>(
+                    begin: const Offset(-0.5, 0),
+                    end: Offset.zero,
+                  ).animate(
+                    CurvedAnimation(
+                      parent: _animationController,
+                      curve: Interval(
+                        0.3 + (index * 0.1),
+                        1.0,
+                        curve: Curves.easeOutCubic,
+                      ),
+                    ),
                   ),
-                ),
-              ),
               child: Padding(
                 padding: EdgeInsets.only(bottom: sf(6)),
                 child: _buildEnhancedTile(
@@ -499,10 +510,7 @@ class _OWDrawerState extends State<_OWDrawer>
           onTap: onTap,
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 200),
-            padding: EdgeInsets.symmetric(
-              horizontal: sf(16),
-              vertical: sf(14),
-            ),
+            padding: EdgeInsets.symmetric(horizontal: sf(16), vertical: sf(14)),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(sf(12)),
               color: Colors.white.withOpacity(0.02),
@@ -566,23 +574,21 @@ class _OWDrawerState extends State<_OWDrawer>
   }
 
   Widget _buildEnhancedLogoutSection(
-      double Function(double) sf,
-      Color white,
-      Color gold,
-      Color darkGold,
-      ) {
+    double Function(double) sf,
+    Color white,
+    Color gold,
+    Color darkGold,
+  ) {
     return Container(
       margin: EdgeInsets.all(sf(16)),
       child: SlideTransition(
-        position: Tween<Offset>(
-          begin: const Offset(0, 0.5),
-          end: Offset.zero,
-        ).animate(
-          CurvedAnimation(
-            parent: _animationController,
-            curve: const Interval(0.7, 1.0, curve: Curves.easeOutCubic),
-          ),
-        ),
+        position: Tween<Offset>(begin: const Offset(0, 0.5), end: Offset.zero)
+            .animate(
+              CurvedAnimation(
+                parent: _animationController,
+                curve: const Interval(0.7, 1.0, curve: Curves.easeOutCubic),
+              ),
+            ),
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(sf(16)),
@@ -595,10 +601,7 @@ class _OWDrawerState extends State<_OWDrawer>
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
-            border: Border.all(
-              color: darkGold.withOpacity(0.4),
-              width: 1,
-            ),
+            border: Border.all(color: darkGold.withOpacity(0.4), width: 1),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.2),
@@ -691,9 +694,7 @@ class _OWDrawerState extends State<_OWDrawer>
         ),
         content: Text(
           'Are you sure you want to sign out?',
-          style: TextStyle(
-            color: OWScaffold.white.withOpacity(0.8),
-          ),
+          style: TextStyle(color: OWScaffold.white.withOpacity(0.8)),
         ),
         actions: [
           TextButton(

@@ -10,6 +10,7 @@ const List<TabItem> baseItems = [
   TabItem(icon: Icons.home_rounded, title: 'Home'),
   TabItem(icon: Icons.local_offer_outlined, title: 'My Offer'),
   TabItem(icon: Icons.event_available_outlined, title: 'Appointment'),
+  TabItem(icon: Icons.person_outline, title: 'Be Partner'),
   TabItem(icon: Icons.settings_outlined, title: 'Settings'),
 ];
 
