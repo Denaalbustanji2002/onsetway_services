@@ -1,30 +1,22 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:onsetway_services/main.dart';
+import 'package:onsetway_services/core/network/http_client.dart';
+import 'package:onsetway_services/services/apiclient.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  testWidgets('App builds without errors', (WidgetTester tester) async {
+    // Provide the required dependency to MyApp.
+    final authApi = AuthApi(HttpClient());
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    await tester.pumpWidget(MyApp(authApi: authApi));
+    await tester.pump(); // trigger first frame
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
-
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    // Basic smoke assertions.
+    expect(find.byType(MaterialApp), findsOneWidget);
+    // If you prefer to assert splash presence, uncomment the next line
+    // after importing the SplashScreen type.
+    // expect(find.byType(SplashScreen), findsOneWidget);
   });
 }

@@ -1,10 +1,12 @@
-// ignore_for_file: unused_import, unnecessary_import, deprecated_member_use
+// ignore_for_file: unused_import, unnecessary_import, deprecated_member_use, use_build_context_synchronously
 
 import 'dart:async';
 import 'dart:math' as math;
 import 'dart:ui';
 import 'package:flutter/foundation.dart'; // <--- إضافة للتحقق من النظام
 import 'package:flutter/material.dart';
+import 'package:onsetway_services/core/storage/token_helper.dart';
+import 'package:onsetway_services/presentation/authentication/screen/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:video_player/video_player.dart';
 
@@ -114,7 +116,6 @@ class _SplashScreenState extends State<SplashScreen>
         curve: Curves.easeInOut,
       ),
     );
-
     _videoController = VideoPlayerController.asset('assets/video/ow3.mp4')
       ..initialize().then((_) {
         if (mounted) setState(() {});
@@ -149,13 +150,20 @@ class _SplashScreenState extends State<SplashScreen>
     _navigateToNextScreen();
   }
 
-  void _navigateToNextScreen() {
+  Future<void> _navigateToNextScreen() async {
     if (_navigating) return;
     _navigating = true;
 
+    final token = await TokenHelper.instance.read(); // secure storage
+    if (!mounted) return;
+
+    final Widget nextScreen = (token != null && token.isNotEmpty)
+        ? const MainScreen()
+        : const LoginPage();
+
     Navigator.of(context).pushReplacement(
       PageRouteBuilder(
-        pageBuilder: (_, __, ___) => const MainScreen(),
+        pageBuilder: (_, __, ___) => nextScreen,
         transitionDuration: const Duration(milliseconds: 800),
         transitionsBuilder: (_, animation, __, child) => FadeTransition(
           opacity: CurvedAnimation(parent: animation, curve: Curves.easeInOut),

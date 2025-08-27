@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, TargetPlatform;
+import 'package:onsetway_services/core/storage/token_helper.dart';
+import 'package:onsetway_services/presentation/authentication/screen/login_screen.dart';
 import 'package:onsetway_services/presentation/settings/view/privacy_policy_screen.dart';
 import 'package:onsetway_services/presentation/settings/view/terms_Conditions.dart';
 
@@ -711,9 +713,15 @@ class _OWDrawerState extends State<_OWDrawer>
                 borderRadius: BorderRadius.circular(8),
               ),
             ),
-            onPressed: () {
-              Navigator.pop(context);
-              // Perform logout logic here
+            onPressed: () async {
+              Navigator.pop(context); // close dialog
+              await TokenHelper.instance.clear(); // 1) remove JWT
+              if (!context.mounted) return;
+              // 2) reset the stack to Login
+              Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (_) => const LoginPage()),
+                (_) => false,
+              );
             },
             child: const Text(
               'Sign Out',
