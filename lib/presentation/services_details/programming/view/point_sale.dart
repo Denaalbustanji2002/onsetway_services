@@ -1,3 +1,5 @@
+// ignore_for_file: unused_import
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -8,6 +10,7 @@ import 'package:onsetway_services/presentation/services_details/programming/widg
 import 'package:onsetway_services/presentation/services_details/programming/widget/card_model.dart';
 import 'package:onsetway_services/presentation/services_details/programming/widget/enhanced_pattern_painter.dart';
 import 'package:onsetway_services/presentation/services_details/programming/widget/smart_navigation.dart';
+import 'package:onsetway_services/presentation/services_screen/widget/contact_qoute.dart';
 
 class PosFeatureScreen extends StatefulWidget {
   const PosFeatureScreen({super.key});
@@ -24,6 +27,7 @@ class _PosFeatureScreenState extends State<PosFeatureScreen>
   late AnimationController _indicatorController;
   late Animation<double> _headerFadeAnimation;
   late Animation<Offset> _headerSlideAnimation;
+  final _serviceName = 'Point Of Sales';
 
   final List<FeatureCardModel> features = [
     FeatureCardModel(
@@ -31,7 +35,6 @@ class _PosFeatureScreenState extends State<PosFeatureScreen>
       description: "Perfect solution for all business categories",
       bulletPoints: [
         "Retail Stores & Supermarkets",
-        "Cafés & Restaurants",
         "Pharmacies & Health Centers",
         "Beauty Salons & Barbershops",
         "Fashion & Shoe Boutiques",
@@ -46,7 +49,6 @@ class _PosFeatureScreenState extends State<PosFeatureScreen>
       description: "Cutting-edge technology with enterprise-grade capabilities",
       bulletPoints: [
         "Cloud-Based Real-time Access",
-        "Intuitive Touch Interface",
         "Bank-Level Security System",
         "Seamless Hardware Integration",
         "Fully Customizable Dashboard",
@@ -103,24 +105,6 @@ class _PosFeatureScreenState extends State<PosFeatureScreen>
     super.dispose();
   }
 
-  void _handleContactUs() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Text('Contact form opened'),
-        backgroundColor: ConstColor.gold,
-      ),
-    );
-  }
-
-  void _handleGetQuote() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Text('Quote request submitted'),
-        backgroundColor: ConstColor.gold,
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final responsive = ResponsiveUi(context);
@@ -152,8 +136,10 @@ class _PosFeatureScreenState extends State<PosFeatureScreen>
                   feature: features[index],
                   responsive: responsive,
                   isActive: currentPage == index,
-                  onContactUs: _handleContactUs,
-                  onGetQuote: _handleGetQuote,
+                  onContactUs: () =>
+                      handleContactUs(context, serviceName: _serviceName),
+                  onGetQuote: () =>
+                      handleGetQuote(context, serviceName: _serviceName),
                 );
               },
             ),

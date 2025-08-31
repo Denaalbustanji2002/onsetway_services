@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:http/http.dart' as http;
+
 import 'package:onsetway_services/constitem/const_url.dart';
 import 'package:onsetway_services/core/network/header.dart';
 import 'package:onsetway_services/core/storage/token_helper.dart';
@@ -26,7 +26,41 @@ class HttpClient {
   }
 
   // -----------------------------
-  // JSON GET (object)
+  // Centralized decode: ALWAYS returns a Map on success.
+  // If the body is a list/primitive, it is wrapped under {"data": decoded}.
+  // -----------------------------
+  Map<String, dynamic> _decodeOrThrow(http.Response resp) {
+    final text = resp.body.isEmpty ? '{}' : resp.body;
+
+    dynamic decoded;
+    try {
+      decoded = jsonDecode(text);
+    } catch (_) {
+      decoded = <String, dynamic>{}; // body wasn't JSON; treat like empty map
+    }
+
+    final Map<String, dynamic> payload = (decoded is Map<String, dynamic>)
+        ? decoded
+        : <String, dynamic>{'data': decoded};
+
+    if (resp.statusCode >= 200 && resp.statusCode < 300) return payload;
+
+    final msg = (payload['message'] is String)
+        ? payload['message'] as String
+        : 'Request failed';
+    throw ApiException(resp.statusCode, msg);
+  }
+
+  // Convenience if you specifically want a List:
+  Future<List<dynamic>> _ensureList(Future<Map<String, dynamic>> fut) async {
+    final m = await fut;
+    final d = m['data'];
+    if (d is List) return d;
+    throw ApiException(200, 'Expected list response under "data"');
+  }
+
+  // -----------------------------
+  // JSON GET/POST/PUT/DELETE
   // -----------------------------
   Future<Map<String, dynamic>> getJson(
     String path, {
@@ -38,30 +72,15 @@ class HttpClient {
       _uri(path, query),
       headers: Headers.buildHeaders(token, isJson: true),
     );
-    return _decodeMapOrThrow(resp);
+    return _decodeOrThrow(resp);
   }
 
-  // -----------------------------
-  // JSON GET (list)
-  // -----------------------------
   Future<List<dynamic>> getJsonList(
     String path, {
     Map<String, dynamic>? query,
     bool auth = false,
-  }) async {
-    final token = auth ? await TokenHelper.instance.read() : null;
-    final resp = await _client.get(
-      _uri(path, query),
-      headers: Headers.buildHeaders(token, isJson: true),
-    );
-    final decoded = _decodeRawOrThrow(resp);
-    if (decoded is List) return decoded;
-    throw ApiException(resp.statusCode, 'Expected list response');
-  }
+  }) => _ensureList(getJson(path, query: query, auth: auth));
 
-  // -----------------------------
-  // JSON POST
-  // -----------------------------
   Future<Map<String, dynamic>> postJson(
     String path, {
     Map<String, dynamic>? body,
@@ -73,12 +92,9 @@ class HttpClient {
       headers: Headers.buildHeaders(token, isJson: true),
       body: jsonEncode(body ?? const <String, dynamic>{}),
     );
-    return _decodeMapOrThrow(resp);
+    return _decodeOrThrow(resp);
   }
 
-  // -----------------------------
-  // JSON PUT
-  // -----------------------------
   Future<Map<String, dynamic>> putJson(
     String path, {
     Map<String, dynamic>? body,
@@ -90,12 +106,9 @@ class HttpClient {
       headers: Headers.buildHeaders(token, isJson: true),
       body: jsonEncode(body ?? const <String, dynamic>{}),
     );
-    return _decodeMapOrThrow(resp);
+    return _decodeOrThrow(resp);
   }
 
-  // -----------------------------
-  // JSON DELETE (with optional body)
-  // -----------------------------
   Future<Map<String, dynamic>> deleteJson(
     String path, {
     Map<String, dynamic>? body,
@@ -105,14 +118,14 @@ class HttpClient {
     final req = http.Request('DELETE', _uri(path))
       ..headers.addAll(Headers.buildHeaders(token, isJson: true))
       ..body = jsonEncode(body ?? const <String, dynamic>{});
-
     final streamed = await _client.send(req);
     final resp = await http.Response.fromStream(streamed);
-    return _decodeMapOrThrow(resp);
+    return _decodeOrThrow(resp);
   }
 
   // -----------------------------
   // Multipart POST (files upload)
+  // files: map of form-field name -> File? (null entries are ignored)
   // -----------------------------
   Future<Map<String, dynamic>> postMultipart(
     String path, {
@@ -123,15 +136,12 @@ class HttpClient {
     final token = auth ? await TokenHelper.instance.read() : null;
 
     final req = http.MultipartRequest('POST', _uri(path));
-    // Important: do NOT set json content-type for multipart
+    // IMPORTANT: do NOT set a JSON content type for multipart;
+    // let MultipartRequest set its own boundary/content-type.
     req.headers.addAll(Headers.buildHeaders(token, isJson: false));
 
-    // fields
-    fields.forEach((key, value) {
-      req.fields.putIfAbsent(key, () => value);
-    });
+    fields.forEach((k, v) => req.fields[k] = v);
 
-    // files (nullable)
     for (final entry in files.entries) {
       final file = entry.value;
       if (file != null) {
@@ -141,27 +151,7 @@ class HttpClient {
 
     final streamed = await req.send();
     final resp = await http.Response.fromStream(streamed);
-    return _decodeMapOrThrow(resp);
-  }
-
-  // -----------------------------
-  // Helpers
-  // -----------------------------
-  Map<String, dynamic> _decodeMapOrThrow(http.Response resp) {
-    final decoded = _decodeRawOrThrow(resp);
-    if (decoded is Map<String, dynamic>) return decoded;
-    throw ApiException(resp.statusCode, 'Unexpected response shape');
-  }
-
-  dynamic _decodeRawOrThrow(http.Response resp) {
-    final text = resp.body.isEmpty ? '{}' : resp.body;
-    final decoded = jsonDecode(text);
-    if (resp.statusCode >= 200 && resp.statusCode < 300) return decoded;
-
-    final msg = (decoded is Map && decoded['message'] is String)
-        ? decoded['message'] as String
-        : 'Request failed';
-    throw ApiException(resp.statusCode, msg);
+    return _decodeOrThrow(resp);
   }
 
   void close() => _client.close();

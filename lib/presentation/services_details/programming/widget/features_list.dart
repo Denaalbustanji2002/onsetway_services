@@ -113,9 +113,9 @@ class _FeatureListState extends State<FeatureList>
                             style: TextStyle(
                               color: Colors.white.withOpacity(0.95),
                               fontSize:
-                                  widget.responsive.fontSize(3.4) *
+                                  widget.responsive.fontSize(3.9) *
                                   widget.scaleFactor,
-                              height: 1.35,
+                              height: 1.04,
                               letterSpacing: spacing(0.2),
                               fontWeight: FontWeight.w500,
                             ),

@@ -1,13 +1,14 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:onsetway_services/constitem/const_colors.dart';
+
 import 'package:onsetway_services/helper/responsive_ui.dart';
 import 'package:onsetway_services/presentation/services_details/programming/widget/Smart_header.dart';
 import 'package:onsetway_services/presentation/services_details/programming/widget/appbar_pop.dart';
 import 'package:onsetway_services/presentation/services_details/programming/widget/card_model.dart';
 import 'package:onsetway_services/presentation/services_details/programming/widget/enhanced_pattern_painter.dart';
 import 'package:onsetway_services/presentation/services_details/programming/widget/smart_navigation.dart';
+import 'package:onsetway_services/presentation/services_screen/widget/contact_qoute.dart';
 
 class CyberSecurityScreen extends StatefulWidget {
   const CyberSecurityScreen({super.key});
@@ -24,6 +25,7 @@ class _CyberSecurityScreenState extends State<CyberSecurityScreen>
   late AnimationController _indicatorController;
   late Animation<double> _headerFadeAnimation;
   late Animation<Offset> _headerSlideAnimation;
+  final _serviceName = 'Cyber Security';
 
   final List<FeatureCardModel> features = [
     FeatureCardModel(
@@ -97,24 +99,6 @@ class _CyberSecurityScreenState extends State<CyberSecurityScreen>
     super.dispose();
   }
 
-  void _handleContactUs() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Text('Contact form opened'),
-        backgroundColor: ConstColor.gold,
-      ),
-    );
-  }
-
-  void _handleGetQuote() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Text('Quote request submitted'),
-        backgroundColor: ConstColor.gold,
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final responsive = ResponsiveUi(context);
@@ -146,8 +130,10 @@ class _CyberSecurityScreenState extends State<CyberSecurityScreen>
                   feature: features[index],
                   responsive: responsive,
                   isActive: currentPage == index,
-                  onContactUs: _handleContactUs,
-                  onGetQuote: _handleGetQuote,
+                  onContactUs: () =>
+                      handleContactUs(context, serviceName: _serviceName),
+                  onGetQuote: () =>
+                      handleGetQuote(context, serviceName: _serviceName),
                 );
               },
             ),
