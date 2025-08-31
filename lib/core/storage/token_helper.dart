@@ -10,21 +10,41 @@ class TokenHelper {
   );
 
   static const _tokenKey = 'auth_token';
-  String? _cache;
+  static const _roleKey = 'auth_role';
+
+  String? _tokenCache;
+  String? _roleCache;
 
   Future<void> save(String token) async {
-    _cache = token;
+    // keep for backward compatibility
+    _tokenCache = token;
     await _k.write(key: _tokenKey, value: token);
   }
 
+  Future<void> saveSession({
+    required String token,
+    required String role,
+  }) async {
+    _tokenCache = token;
+    _roleCache = role;
+    await _k.write(key: _tokenKey, value: token);
+    await _k.write(key: _roleKey, value: role);
+  }
+
   Future<String?> read() async {
-    if (_cache != null) return _cache;
-    _cache = await _k.read(key: _tokenKey);
-    return _cache;
+    _tokenCache ??= await _k.read(key: _tokenKey);
+    return _tokenCache;
+  }
+
+  Future<String?> readRole() async {
+    _roleCache ??= await _k.read(key: _roleKey);
+    return _roleCache;
   }
 
   Future<void> clear() async {
-    _cache = null;
+    _tokenCache = null;
+    _roleCache = null;
     await _k.delete(key: _tokenKey);
+    await _k.delete(key: _roleKey);
   }
 }

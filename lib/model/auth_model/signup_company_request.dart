@@ -26,7 +26,7 @@ class SignupCompanyRequest {
     'password': password,
     'phoneNumber': phoneNumber,
     'companyName': companyName,
-    'authorizePerson': authorizePerson,
+    'authorizedPerson': authorizePerson, // 👈 صحح هون
     'commercialRegistrationNumber': commercialRegistrationNumber,
     'unifiedNumber': unifiedNumber,
     'taxNumber': taxNumber,

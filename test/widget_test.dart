@@ -3,20 +3,24 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:onsetway_services/main.dart';
 import 'package:onsetway_services/core/network/http_client.dart';
-import 'package:onsetway_services/services/apiclient.dart';
+import 'package:onsetway_services/services/auth_api.dart';
+import 'package:onsetway_services/services/profile_api.dart';
 
 void main() {
   testWidgets('App builds without errors', (WidgetTester tester) async {
-    // Provide the required dependency to MyApp.
-    final authApi = AuthApi(HttpClient());
+    // Build required dependencies for MyApp.
+    final http = HttpClient();
+    final authApi = AuthApi(http);
+    final profileApi = ProfileApi(http);
 
-    await tester.pumpWidget(MyApp(authApi: authApi));
+    await tester.pumpWidget(
+      MyApp(http: http, authApi: authApi, profileApi: profileApi),
+    );
     await tester.pump(); // trigger first frame
 
     // Basic smoke assertions.
     expect(find.byType(MaterialApp), findsOneWidget);
-    // If you prefer to assert splash presence, uncomment the next line
-    // after importing the SplashScreen type.
+    // If you want to assert the splash is present, import SplashScreen and:
     // expect(find.byType(SplashScreen), findsOneWidget);
   });
 }

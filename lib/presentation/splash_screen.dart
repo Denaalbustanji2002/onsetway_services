@@ -3,11 +3,10 @@
 import 'dart:async';
 import 'dart:math' as math;
 import 'dart:ui';
-import 'package:flutter/foundation.dart'; // <--- إضافة للتحقق من النظام
+import 'package:flutter/foundation.dart'; // للتحقق من النظام
 import 'package:flutter/material.dart';
 import 'package:onsetway_services/core/storage/token_helper.dart';
 import 'package:onsetway_services/presentation/authentication/screen/login_screen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:video_player/video_player.dart';
 
 import 'home/widget/main_screen_nav.dart';
@@ -37,6 +36,7 @@ class _SplashScreenState extends State<SplashScreen>
 
   bool _showVideo = false;
   bool _navigating = false;
+  bool _videoDisposed = false;
   Timer? _navigationTimer;
 
   late bool _isAndroid;
@@ -116,11 +116,11 @@ class _SplashScreenState extends State<SplashScreen>
         curve: Curves.easeInOut,
       ),
     );
+
     _videoController = VideoPlayerController.asset('assets/video/ow3.mp4')
       ..initialize().then((_) {
         if (mounted) setState(() {});
       });
-
     _videoController.setLooping(false);
     _videoController.setVolume(0.0);
 
@@ -140,7 +140,7 @@ class _SplashScreenState extends State<SplashScreen>
 
     _layoutAnimationController.forward();
 
-    if (_videoController.value.isInitialized) {
+    if (!_videoDisposed && _videoController.value.isInitialized) {
       _videoController.play();
     }
 
@@ -150,9 +150,25 @@ class _SplashScreenState extends State<SplashScreen>
     _navigateToNextScreen();
   }
 
+  Future<void> _tearDownVideo() async {
+    if (_videoDisposed) return;
+    try {
+      if (_videoController.value.isInitialized) {
+        await _videoController.pause();
+      }
+    } catch (_) {}
+    try {
+      await _videoController.dispose();
+      _videoDisposed = true;
+    } catch (_) {}
+  }
+
   Future<void> _navigateToNextScreen() async {
     if (_navigating) return;
     _navigating = true;
+
+    // إيقاف/تحرير الفيديو قبل التنقل لمنع مشاكل ImageReader/MediaCodec
+    await _tearDownVideo();
 
     final token = await TokenHelper.instance.read(); // secure storage
     if (!mounted) return;
@@ -179,14 +195,23 @@ class _SplashScreenState extends State<SplashScreen>
     _layoutAnimationController.dispose();
     _progressAnimationController.dispose();
     _navigationTimer?.cancel();
-    if (_videoController.value.isInitialized) {
-      _videoController.pause();
+    // إن لم نكن قد تخلصنا من الفيديو بالفعل
+    if (!_videoDisposed) {
+      try {
+        if (_videoController.value.isInitialized) {
+          _videoController.pause();
+        }
+      } catch (_) {}
+      try {
+        _videoController.dispose();
+      } catch (_) {}
+      _videoDisposed = true;
     }
-    _videoController.dispose();
     super.dispose();
   }
 
   Widget _buildVideoContainer() {
+    if (_videoDisposed) return const SizedBox.shrink();
     return AnimatedBuilder(
       animation: Listenable.merge([_videoFadeAnimation, _videoScaleAnimation]),
       builder: (context, child) {
@@ -197,7 +222,12 @@ class _SplashScreenState extends State<SplashScreen>
             child: SizedBox(
               width: _videoSize,
               height: _videoSize,
-              child: ClipOval(child: VideoPlayer(_videoController)),
+              child: ClipOval(
+                child: RepaintBoundary(
+                  // يعزل الفيديو عن أي Opacity/Fade خارجي (Impeller-safe)
+                  child: VideoPlayer(_videoController),
+                ),
+              ),
             ),
           ),
         );
@@ -281,7 +311,9 @@ class _SplashScreenState extends State<SplashScreen>
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    if (_showVideo && _videoController.value.isInitialized)
+                    if (_showVideo &&
+                        !_videoDisposed &&
+                        _videoController.value.isInitialized)
                       _buildVideoContainer(),
 
                     if (_showVideo) SizedBox(height: _isAndroid ? 60 : 80),
@@ -294,30 +326,34 @@ class _SplashScreenState extends State<SplashScreen>
                           scale: _textScaleAnimation,
                           child: Column(
                             children: [
-                              ShaderMask(
-                                shaderCallback: (bounds) {
-                                  const LinearGradient textGradient =
-                                      LinearGradient(
-                                        colors: [
-                                          Color(0xFFcd9733),
-                                          Color(0xFFb8964c),
-                                          Colors.white,
-                                          Color(0xFFb8964c),
-                                        ],
-                                        begin: Alignment.topLeft,
-                                        end: Alignment.bottomRight,
-                                        stops: [0.0, 0.3, 0.7, 1.0],
-                                      );
-                                  return textGradient.createShader(bounds);
-                                },
-                                child: Text(
-                                  'OnsetWay',
-                                  style: TextStyle(
-                                    fontFamily: 'MAIAN',
-                                    fontSize: _logoFontSize,
-                                    fontWeight: FontWeight.w300,
-                                    color: Colors.white,
-                                    letterSpacing: 2.0,
+                              // عزل ShaderMask عن Opacity لتفادي تحذير Impeller
+                              RepaintBoundary(
+                                child: ShaderMask(
+                                  shaderCallback: (bounds) {
+                                    const LinearGradient textGradient =
+                                        LinearGradient(
+                                          colors: [
+                                            Color(0xFFcd9733),
+                                            Color(0xFFb8964c),
+                                            Colors.white,
+                                            Color(0xFFb8964c),
+                                          ],
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
+                                          stops: [0.0, 0.3, 0.7, 1.0],
+                                        );
+                                    return textGradient.createShader(bounds);
+                                  },
+                                  blendMode: BlendMode.srcIn,
+                                  child: Text(
+                                    'OnsetWay',
+                                    style: TextStyle(
+                                      fontFamily: 'MAIAN',
+                                      fontSize: _logoFontSize,
+                                      fontWeight: FontWeight.w300,
+                                      color: Colors.white,
+                                      letterSpacing: 2.0,
+                                    ),
                                   ),
                                 ),
                               ),

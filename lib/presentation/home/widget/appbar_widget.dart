@@ -1,26 +1,28 @@
 // ow_app_bar.dart
-// ignore_for_file: deprecated_member_use, unused_element, sized_box_for_whitespace
+// ignore_for_file: deprecated_member_use, unused_element, sized_box_for_whitespace, use_build_context_synchronously, unused_field, avoid_print
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, TargetPlatform;
+
 import 'package:onsetway_services/core/storage/token_helper.dart';
 import 'package:onsetway_services/presentation/authentication/screen/login_screen.dart';
+import 'package:onsetway_services/presentation/profile/view/company_profile_page.dart';
+import 'package:onsetway_services/presentation/profile/view/person_profile_page.dart';
 import 'package:onsetway_services/presentation/settings/view/privacy_policy_screen.dart';
 import 'package:onsetway_services/presentation/settings/view/terms_Conditions.dart';
+import 'package:onsetway_services/presentation/support/widget/support_hub_screen.dart';
 
 class OWScaffold extends StatelessWidget {
   final String title;
   final Widget body;
-  final String? logoAsset;
   final List<Widget>? actions;
 
   const OWScaffold({
     super.key,
     required this.title,
     required this.body,
-    this.logoAsset,
     this.actions,
   });
 
@@ -48,19 +50,13 @@ class OWScaffold extends StatelessWidget {
         preferredSize: Size.fromHeight(sf(64)),
         child: _OWAppBar(
           title: title,
-          logoAsset: logoAsset,
           gradient: _barGradient,
           actions: actions,
           foreground: white,
           factor: factor,
         ),
       ),
-      drawer: _OWDrawer(
-        logoAsset: logoAsset,
-        gradient: _barGradient,
-        isDark: isDark,
-        factor: factor,
-      ),
+      drawer: _OWDrawer(gradient: _barGradient, isDark: isDark, factor: factor),
       body: body,
     );
   }
@@ -68,7 +64,6 @@ class OWScaffold extends StatelessWidget {
 
 class _OWAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
-  final String? logoAsset;
   final LinearGradient gradient;
   final List<Widget>? actions;
   final Color foreground;
@@ -79,7 +74,6 @@ class _OWAppBar extends StatelessWidget implements PreferredSizeWidget {
     required this.gradient,
     required this.foreground,
     required this.factor,
-    this.logoAsset,
     this.actions,
   });
 
@@ -113,42 +107,27 @@ class _OWAppBar extends StatelessWidget implements PreferredSizeWidget {
               tooltip: 'Menu',
             ),
           ),
-          title: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (logoAsset != null)
-                Padding(
-                  padding: EdgeInsets.only(right: sf(10)),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(sf(8)),
-                    child: Image.asset(
-                      logoAsset!,
-                      width: sf(28),
-                      height: sf(28),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-              ShaderMask(
-                shaderCallback: (rect) => const LinearGradient(
-                  colors: [
-                    OWScaffold.darkGold,
-                    OWScaffold.gold,
-                    OWScaffold.white,
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ).createShader(rect),
-                child: Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: sf(20),
-                    fontWeight: FontWeight.w700,
-                    color: OWScaffold.white,
-                  ),
+          title: RepaintBoundary(
+            child: ShaderMask(
+              shaderCallback: (rect) => const LinearGradient(
+                colors: [
+                  OWScaffold.darkGold,
+                  OWScaffold.gold,
+                  OWScaffold.white,
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ).createShader(rect),
+              blendMode: BlendMode.srcIn,
+              child: Text(
+                title,
+                style: TextStyle(
+                  fontSize: sf(20),
+                  fontWeight: FontWeight.w700,
+                  color: OWScaffold.white,
                 ),
               ),
-            ],
+            ),
           ),
           actions:
               (actions ??
@@ -168,7 +147,6 @@ class _OWAppBar extends StatelessWidget implements PreferredSizeWidget {
 }
 
 class _OWDrawer extends StatefulWidget {
-  final String? logoAsset;
   final LinearGradient gradient;
   final bool isDark;
   final double factor;
@@ -177,7 +155,6 @@ class _OWDrawer extends StatefulWidget {
     required this.gradient,
     required this.isDark,
     required this.factor,
-    this.logoAsset,
   });
 
   @override
@@ -189,6 +166,102 @@ class _OWDrawerState extends State<_OWDrawer>
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
+  void _openSupport(BuildContext context) async {
+    Navigator.of(context).pop(); // close drawer first
+    await Future.delayed(const Duration(milliseconds: 120));
+    if (!mounted) return;
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (_) => const SupportCenterPage()));
+  }
+
+  Future<void> _openProfile(BuildContext context) async {
+    print("🔹 بدء تنفيذ _openProfile");
+
+    // أغلق الـ Drawer إذا كان مفتوح
+    Navigator.maybeOf(context)?.pop();
+    print("📌 تم إغلاق الـ Drawer إذا كان مفتوح");
+
+    await Future.delayed(const Duration(milliseconds: 120));
+    print("⏳ تم الانتظار 120ms بعد إغلاق الـ Drawer");
+
+    // اقرأ الدور من التوكن
+    final role = (await TokenHelper.instance.readRole())?.toLowerCase();
+    print("🔑 الدور المسترجع من التوكن: $role");
+
+    // تحقق أن الـ context ما زال صالح
+    if (!mounted) {
+      print("⚠️ الـ context لم يعد صالح، الخروج من الدالة");
+      return;
+    }
+
+    if (role == 'company') {
+      print("🏢 الدور = company → فتح CompanyProfilePage");
+      Navigator.of(
+        context,
+      ).push(MaterialPageRoute(builder: (_) => const CompanyProfilePage()));
+    } else if (role == 'person') {
+      print("👤 الدور = person → فتح PersonProfilePage");
+      Navigator.of(
+        context,
+      ).push(MaterialPageRoute(builder: (_) => const PersonProfilePage()));
+    } else {
+      print("❓ الدور غير معروف → إظهار Dialog للاختيار");
+      final target = await showDialog<String>(
+        context: context,
+        builder: (_) => AlertDialog(
+          backgroundColor: const Color(0xFF1A1A1A),
+          title: const Text(
+            'Open Profile',
+            style: TextStyle(color: Colors.white),
+          ),
+          content: const Text(
+            'Which profile do you want to open?',
+            style: TextStyle(color: Colors.white70),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                print("👤 المستخدم اختار Person من الـ Dialog");
+                Navigator.pop(context, 'person');
+              },
+              child: const Text('Person'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                print("🏢 المستخدم اختار Company من الـ Dialog");
+                Navigator.pop(context, 'company');
+              },
+              child: const Text('Company'),
+            ),
+          ],
+        ),
+      );
+
+      // تحقق أن الـ context ما زال صالح وأن المستخدم اختار خيار
+      if (!mounted) {
+        print("⚠️ الـ context لم يعد صالح بعد الـ Dialog، الخروج");
+        return;
+      }
+      if (target == null) {
+        print("❌ المستخدم لم يختار أي خيار من الـ Dialog");
+        return;
+      }
+
+      print("✅ الخيار النهائي بعد الـ Dialog: $target");
+
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => target == 'company'
+              ? const CompanyProfilePage()
+              : const PersonProfilePage(),
+        ),
+      );
+      print("🚀 تم فتح صفحة البروفايل بناءً على الاختيار: $target");
+    }
+
+    print("🔚 انتهاء تنفيذ _openProfile");
+  }
 
   @override
   void initState() {
@@ -270,153 +343,35 @@ class _OWDrawerState extends State<_OWDrawer>
     Color darkGold,
   ) {
     return Container(
-      height: sf(180),
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          // Background gradient
-          Container(
-            decoration: BoxDecoration(
-              gradient: widget.gradient,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.3),
-                  blurRadius: 15,
-                  offset: const Offset(0, 8),
-                ),
-              ],
-            ),
-          ),
-
-          // Overlay with subtle pattern
-          Positioned.fill(
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.2),
-                backgroundBlendMode: BlendMode.overlay,
-              ),
-            ),
-          ),
-
-          // Decorative border at bottom
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Container(
-              height: 1,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    Colors.transparent,
-                    darkGold.withOpacity(0.6),
-                    Colors.transparent,
-                  ],
-                ),
-              ),
-            ),
-          ),
-
-          // Content
-          SlideTransition(
-            position: _slideAnimation,
-            child: Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Logo container with elegant styling
-                  if (widget.logoAsset != null)
-                    Container(
-                      width: sf(64),
-                      height: sf(64),
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: white.withOpacity(0.2),
-                          width: 2,
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: darkGold.withOpacity(0.3),
-                            blurRadius: 12,
-                            spreadRadius: 2,
-                          ),
-                        ],
-                      ),
-                      child: ClipOval(
-                        child: Image.asset(
-                          widget.logoAsset!,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-
-                  SizedBox(height: sf(16)),
-
-                  // Brand name with enhanced styling
-                  ShaderMask(
-                    shaderCallback: (bounds) {
-                      return const LinearGradient(
-                        colors: [
-                          Color(0xFFcd9733),
-                          Color(0xFFb8964c),
-                          Colors.white,
-                          Color(0xFFb8964c),
-                        ],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        stops: [0.0, 0.3, 0.7, 1.0],
-                      ).createShader(bounds);
-                    },
-                    child: Text(
-                      'OnsetWay',
-                      style: TextStyle(
-                        color: white,
-                        fontSize: sf(24),
-                        fontWeight: FontWeight.w300,
-                        letterSpacing: 1.5,
-                        shadows: [
-                          Shadow(
-                            offset: const Offset(0, 2),
-                            blurRadius: 4,
-                            color: Colors.black.withOpacity(0.5),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  SizedBox(height: sf(6)),
-
-                  // Subtitle with refined styling
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: sf(16),
-                      vertical: sf(4),
-                    ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(sf(12)),
-                      color: Colors.black.withOpacity(0.2),
-                      border: Border.all(
-                        color: darkGold.withOpacity(0.3),
-                        width: 0.5,
-                      ),
-                    ),
-                    child: Text(
-                      'PREMIUM SERVICES',
-                      style: TextStyle(
-                        color: const Color(0xFFD9C9A3),
-                        fontSize: sf(10),
-                        fontWeight: FontWeight.w400,
-                        letterSpacing: 2.0,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+      height: sf(120),
+      decoration: BoxDecoration(
+        gradient: widget.gradient,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.3),
+            blurRadius: 15,
+            offset: const Offset(0, 8),
           ),
         ],
+      ),
+      child: Center(
+        child: ShaderMask(
+          shaderCallback: (bounds) => const LinearGradient(
+            colors: [Color(0xFFcd9733), Color(0xFFb8964c), Colors.white],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ).createShader(bounds),
+          blendMode: BlendMode.srcIn,
+          child: Text(
+            'OnsetWay',
+            style: TextStyle(
+              color: white,
+              fontSize: sf(24),
+              fontWeight: FontWeight.w500,
+              letterSpacing: 1.5,
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -426,13 +381,13 @@ class _OWDrawerState extends State<_OWDrawer>
       {
         'icon': Icons.person_outline_rounded,
         'label': 'Profile',
-        'onTap': () {},
+        'onTap': () => _openProfile(context),
       },
       {'icon': Icons.settings_outlined, 'label': 'Settings', 'onTap': () {}},
       {
         'icon': Icons.support_agent_outlined,
         'label': 'Support',
-        'onTap': () {},
+        'onTap': () => _openSupport(context),
       },
       {
         'icon': Icons.privacy_tip_outlined,
@@ -454,7 +409,6 @@ class _OWDrawerState extends State<_OWDrawer>
           );
         },
       },
-
       {'icon': Icons.info_outline_rounded, 'label': 'About', 'onTap': () {}},
     ];
 
@@ -483,7 +437,7 @@ class _OWDrawerState extends State<_OWDrawer>
                 child: _buildEnhancedTile(
                   icon: menuItems[index]['icon'] as IconData,
                   label: menuItems[index]['label'] as String,
-                  onTap: menuItems[index]['onTap'] as VoidCallback,
+                  onTap: (menuItems[index]['onTap'] as VoidCallback?) ?? () {},
                   factor: widget.factor,
                   delay: index * 100.0,
                 ),
@@ -616,9 +570,7 @@ class _OWDrawerState extends State<_OWDrawer>
             color: Colors.transparent,
             child: InkWell(
               borderRadius: BorderRadius.circular(sf(16)),
-              onTap: () {
-                _showLogoutDialog(context);
-              },
+              onTap: () => _showLogoutDialog(context),
               child: Padding(
                 padding: EdgeInsets.symmetric(
                   vertical: sf(16),
@@ -687,7 +639,7 @@ class _OWDrawerState extends State<_OWDrawer>
             width: 1,
           ),
         ),
-        title: Text(
+        title: const Text(
           'Sign Out',
           style: TextStyle(
             color: OWScaffold.white,
@@ -700,10 +652,13 @@ class _OWDrawerState extends State<_OWDrawer>
         ),
         actions: [
           TextButton(
+            style: TextButton.styleFrom(
+              backgroundColor: Colors.redAccent.withOpacity(0.15),
+            ),
             onPressed: () => Navigator.pop(context),
             child: Text(
               'Cancel',
-              style: TextStyle(color: OWScaffold.white.withOpacity(0.7)),
+              style: TextStyle(color: OWScaffold.white.withOpacity(0.85)),
             ),
           ),
           ElevatedButton(
@@ -714,10 +669,9 @@ class _OWDrawerState extends State<_OWDrawer>
               ),
             ),
             onPressed: () async {
-              Navigator.pop(context); // close dialog
-              await TokenHelper.instance.clear(); // 1) remove JWT
+              Navigator.pop(context);
+              await TokenHelper.instance.clear();
               if (!context.mounted) return;
-              // 2) reset the stack to Login
               Navigator.of(context).pushAndRemoveUntil(
                 MaterialPageRoute(builder: (_) => const LoginPage()),
                 (_) => false,
@@ -730,34 +684,6 @@ class _OWDrawerState extends State<_OWDrawer>
           ),
         ],
       ),
-    );
-  }
-
-  Widget _tile({
-    required IconData icon,
-    required String label,
-    double factor = 1.0,
-    VoidCallback? onTap,
-  }) {
-    const white = OWScaffold.white;
-    const gold = OWScaffold.gold;
-    double sf(double v) => v * factor;
-
-    return ListTile(
-      leading: Icon(icon, color: gold, size: sf(24)),
-      title: Text(
-        label,
-        style: TextStyle(
-          color: white,
-          fontSize: sf(15.5),
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-      onTap: onTap,
-      dense: true,
-      horizontalTitleGap: sf(8),
-      contentPadding: EdgeInsets.symmetric(horizontal: sf(16)),
-      minLeadingWidth: sf(24),
     );
   }
 }

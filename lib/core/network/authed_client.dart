@@ -1,56 +1,33 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-import 'package:onsetway_services/constitem/const_url.dart';
-import 'package:onsetway_services/core/network/header.dart';
+import 'package:onsetway_services/core/network/http_client.dart';
 
-import '../storage/token_helper.dart';
-
-import 'http_client.dart';
-
-/// Use this for protected endpoints. It automatically attaches Bearer token.
+/// Thin wrapper that always attaches the JWT via [auth: true].
 class AuthorizedHttpClient {
-  AuthorizedHttpClient({http.Client? client})
-    : _client = client ?? http.Client();
-  final http.Client _client;
+  final HttpClient _base;
 
-  Uri _uri(String path, [Map<String, dynamic>? query]) {
-    final base = ConstUrl.baseUrl;
-    return Uri.parse(
-      '$base$path',
-    ).replace(queryParameters: query?.map((k, v) => MapEntry(k, '$v')));
-  }
+  /// Preferred: pass an existing base client (named param).
+  AuthorizedHttpClient({HttpClient? base}) : _base = base ?? HttpClient();
+
+  /// Convenience factory if you like `fromBase(http)`.
+  factory AuthorizedHttpClient.fromBase(HttpClient base) =>
+      AuthorizedHttpClient(base: base);
+
+  Future<Map<String, dynamic>> getJson(
+    String path, {
+    Map<String, dynamic>? query,
+  }) => _base.getJson(path, query: query, auth: true);
 
   Future<Map<String, dynamic>> postJson(
     String path, {
     Map<String, dynamic>? body,
-  }) async {
-    final token = await TokenHelper.instance.read();
-    final resp = await _client.post(
-      _uri(path),
-      headers: Headers.buildHeaders(token),
-      body: jsonEncode(body ?? <String, dynamic>{}),
-    );
-    final text = resp.body.isEmpty ? '{}' : resp.body;
-    final json = jsonDecode(text) as Map<String, dynamic>;
-    if (resp.statusCode >= 200 && resp.statusCode < 300) return json;
-    throw ApiException(
-      resp.statusCode,
-      (json['message'] ?? 'Request failed') as String,
-    );
-  }
+  }) => _base.postJson(path, body: body, auth: true);
 
-  Future<Map<String, dynamic>> getJson(String path) async {
-    final token = await TokenHelper.instance.read();
-    final resp = await _client.get(
-      _uri(path),
-      headers: Headers.buildHeaders(token),
-    );
-    final text = resp.body.isEmpty ? '{}' : resp.body;
-    final json = jsonDecode(text) as Map<String, dynamic>;
-    if (resp.statusCode >= 200 && resp.statusCode < 300) return json;
-    throw ApiException(
-      resp.statusCode,
-      (json['message'] ?? 'Request failed') as String,
-    );
-  }
+  Future<Map<String, dynamic>> putJson(
+    String path, {
+    Map<String, dynamic>? body,
+  }) => _base.putJson(path, body: body, auth: true);
+
+  Future<Map<String, dynamic>> deleteJson(
+    String path, {
+    Map<String, dynamic>? body,
+  }) => _base.deleteJson(path, body: body, auth: true);
 }
