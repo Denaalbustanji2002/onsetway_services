@@ -21,6 +21,8 @@ dependencies:
   google_fonts: ^6.3.0
   image_picker: ^1.2.0
   file_picker: ^10.3.2
+  gradient_borders: ^1.0.2
+  url_launcher: ^6.3.2
 
 dev_dependencies:
   flutter_test:

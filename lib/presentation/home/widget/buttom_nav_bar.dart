@@ -6,17 +6,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:onsetway_services/constitem/const_colors.dart';
+import 'package:onsetway_services/core/network/http_client.dart';
 import 'package:onsetway_services/services/access_api.dart';
 
 class TabItem {
   final IconData icon;
   final String title;
   final bool enabled;
-
   const TabItem({required this.icon, required this.title, this.enabled = true});
 }
 
-/// If you want a fixed fallback while loading or on error
+/// Fallback while features load / on error.
 const List<TabItem> _fallbackItems = [
   TabItem(icon: Icons.home_filled, title: 'Home'),
   TabItem(icon: Icons.local_offer_rounded, title: 'My Offer', enabled: false),
@@ -48,7 +48,6 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
   late AnimationController _scaleController;
   late Animation<double> _scaleAnimation;
 
-  // fetch once and cache
   late Future<Map<String, bool>> _featuresFuture;
 
   @override
@@ -63,16 +62,15 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
       CurvedAnimation(parent: _scaleController, curve: Curves.elasticOut),
     );
 
-    // Kick off the request once
-    final accessApi = context.read<AccessApi>();
+    // Build AccessApi from the injected HttpClient (no need to provide AccessApi)
+    final http = context.read<HttpClient>();
+    final accessApi = AccessApi(http);
     _featuresFuture = _getFeatures(accessApi);
   }
 
   Future<Map<String, bool>> _getFeatures(AccessApi api) async {
-    // Expected keys in response:
-    // canAccessAppointments, canAccessOffers
     final f = await api.getUserFeatures();
-    return <String, bool>{
+    return {
       'offers': f.canAccessOffers,
       'appointments': f.canAccessAppointments,
     };
@@ -88,7 +86,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
     final canOffers = features['offers'] ?? false;
     final canAppointments = features['appointments'] ?? false;
 
-    return <TabItem>[
+    return [
       const TabItem(icon: Icons.home_filled, title: 'Home'),
       TabItem(
         icon: Icons.local_offer_rounded,
@@ -108,7 +106,6 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
   @override
   Widget build(BuildContext context) {
     final bool isAndroid = defaultTargetPlatform == TargetPlatform.android;
-
     final double margin = isAndroid ? 0 : 20;
     final double iconSize = isAndroid ? 20 : 28;
     final double fontSize = isAndroid ? 9 : 13;
@@ -116,8 +113,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
     return FutureBuilder<Map<String, bool>>(
       future: _featuresFuture,
       builder: (context, snapshot) {
-        // While loading (or on error), we fall back to a known list with disabled protected tabs.
-        final List<TabItem> items = snapshot.hasData
+        final items = snapshot.hasData
             ? _buildItemsFromFeatures(snapshot.data!)
             : _fallbackItems;
 
@@ -160,9 +156,9 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: items.asMap().entries.map((entry) {
-                        final int index = entry.key;
-                        final TabItem item = entry.value;
-                        final bool isSelected = widget.selectedIndex == index;
+                        final index = entry.key;
+                        final item = entry.value;
+                        final isSelected = widget.selectedIndex == index;
 
                         return GestureDetector(
                           onTapDown: (_) => _scaleController.forward(),
@@ -187,27 +183,16 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
                           child: AnimatedBuilder(
                             animation: _scaleAnimation,
                             builder: (context, child) {
-                              final Color iconColor = item.enabled
+                              final iconColor = item.enabled
                                   ? (isSelected
                                         ? ConstColor.gold
                                         : ConstColor.white.withOpacity(0.6))
-                                  : const Color.fromARGB(
-                                      255,
-                                      250,
-                                      245,
-                                      245,
-                                    ).withOpacity(0.5);
-
-                              final Color textColor = item.enabled
+                                  : const Color(0xFFF9F5F5).withOpacity(0.5);
+                              final textColor = item.enabled
                                   ? (isSelected
                                         ? ConstColor.gold
                                         : ConstColor.white.withOpacity(0.7))
-                                  : const Color.fromARGB(
-                                      255,
-                                      241,
-                                      238,
-                                      238,
-                                    ).withOpacity(0.6);
+                                  : const Color(0xFFF1EEEE).withOpacity(0.6);
 
                               return Transform.scale(
                                 scale: isSelected ? _scaleAnimation.value : 1.0,
@@ -270,10 +255,11 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
                 ),
               ),
 
-              // Glow indicator (align to dynamic items length)
+              // glow indicator
               Positioned(
                 top: 0,
-                left: cellWidth * widget.selectedIndex,
+                left:
+                    cellWidth * widget.selectedIndex.clamp(0, items.length - 1),
                 child: Container(
                   width: cellWidth,
                   height: 3,

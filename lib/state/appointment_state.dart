@@ -16,18 +16,19 @@ class AppointmentLoading extends AppointmentState {
 }
 
 class AppointmentLoaded extends AppointmentState {
-  final List<AvailabilitySlot> available;
+  final List<AvailableDay> availableDays;
   final List<AppointmentModel> myAppointments;
-  const AppointmentLoaded(this.available, this.myAppointments);
+
+  const AppointmentLoaded(this.availableDays, this.myAppointments);
 
   @override
-  List<Object?> get props => [available, myAppointments];
+  List<Object?> get props => [availableDays, myAppointments];
 
   AppointmentLoaded copyWith({
-    List<AvailabilitySlot>? available,
+    List<AvailableDay>? availableDays,
     List<AppointmentModel>? myAppointments,
   }) => AppointmentLoaded(
-    available ?? this.available,
+    availableDays ?? this.availableDays,
     myAppointments ?? this.myAppointments,
   );
 }

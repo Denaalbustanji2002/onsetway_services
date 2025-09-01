@@ -10,6 +10,7 @@ import 'package:onsetway_services/core/storage/token_helper.dart';
 import 'package:onsetway_services/presentation/authentication/screen/login_screen.dart';
 import 'package:onsetway_services/presentation/profile/view/company_profile_page.dart';
 import 'package:onsetway_services/presentation/profile/view/person_profile_page.dart';
+import 'package:onsetway_services/presentation/settings/view/aboutus.dart';
 import 'package:onsetway_services/presentation/settings/view/privacy_policy_screen.dart';
 import 'package:onsetway_services/presentation/settings/view/terms_Conditions.dart';
 import 'package:onsetway_services/presentation/support/widget/support_hub_screen.dart';
@@ -409,7 +410,15 @@ class _OWDrawerState extends State<_OWDrawer>
           );
         },
       },
-      {'icon': Icons.info_outline_rounded, 'label': 'About', 'onTap': () {}},
+      {
+        'icon': Icons.info_outline_rounded,
+        'label': 'About',
+        'onTap': () {
+          Navigator.of(
+            context,
+          ).push(MaterialPageRoute(builder: (context) => AboutUsPage()));
+        },
+      },
     ];
 
     return Container(
